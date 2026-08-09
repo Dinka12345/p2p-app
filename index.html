@@ -6,169 +6,291 @@
     <title>Ethiop2p Marketplace</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #10b981;
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: #334155;
+            --danger-color: #ef4444;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--tg-theme-bg-color, #f4f4f5);
-            color: var(--tg-theme-text-color, #18181b);
-            margin: 0; padding: 12px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+            box-sizing: border-box;
         }
-        .card {
-            background: var(--tg-theme-secondary-bg-color, #ffffff);
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .balance-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 16px;
+            margin-bottom: 20px;
         }
-        .btn {
-            background: var(--tg-theme-button-color, #2563eb);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            border: none;
+
+        .balance-title {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .balance-amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .tab-btn {
+            flex: 1;
             padding: 10px;
+            border: none;
             border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: #ffffff;
+            border-color: var(--accent-color);
+        }
+
+        .ad-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .ad-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .seller-name {
+            font-weight: bold;
+        }
+
+        .ad-price {
+            font-size: 18px;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .ad-details {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        .btn {
             width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--accent-color);
+            color: #ffffff;
             font-weight: bold;
             cursor: pointer;
         }
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
+
+        .form-group {
             margin-bottom: 12px;
         }
-        .tab-btn {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            background: transparent;
-            color: inherit;
+
+        label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--text-secondary);
+            font-size: 14px;
         }
-        .active-tab {
-            background: var(--tg-theme-button-color, #2563eb);
-            color: white;
-            border: none;
-        }
-        .tab-content { display: none; }
-        .visible { display: block; }
+
         input, select {
             width: 100%;
-            padding: 8px;
-            margin: 6px 0 12px 0;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
             box-sizing: border-box;
-            border-radius: 6px;
-            border: 1px solid #ccc;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
+            box-sizing: border-box;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
         }
     </style>
 </head>
 <body>
 
-    <div class="nav-tabs">
-        <button class="tab-btn active-tab" onclick="switchTab('market')">🛒 Market</button>
-        <button class="tab-btn" onclick="switchTab('wallet')">💳 Wallet</button>
-        <button class="tab-btn" onclick="switchTab('create')">➕ Post Ad</button>
+    <div class="header">
+        <h2>Ethiop2p Express</h2>
+        <span id="user-display">Loading...</span>
     </div>
 
-    <!-- Marketplace Tab -->
-    <div id="market-tab" class="tab-content visible">
-        <h3>Active P2P Offers</h3>
-        <div id="ads-container">Loading market data...</div>
+    <div class="balance-card">
+        <div class="balance-title">USDT Balance</div>
+        <div class="balance-amount" id="wallet-balance">0.00 USDT</div>
     </div>
 
-    <!-- Wallet Tab -->
-    <div id="wallet-tab" class="tab-content">
-        <h3>My Wallet</h3>
-        <div class="card">
-            <p>User: <b id="user-display">Trader</b></p>
-            <p>USDT Balance: <b id="usdt-balance">0.00</b> USDT</p>
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('market')">Market</button>
+        <button class="tab-btn" onclick="switchTab('post')">Post Ad</button>
+    </div>
+
+    <!-- Marketplace View -->
+    <div id="tab-market">
+        <div id="ads-container">Loading P2P offers...</div>
+    </div>
+
+    <!-- Create Ad View -->
+    <div id="tab-post" style="display: none;">
+        <div class="form-group">
+            <label>Order Type</label>
+            <select id="ad-type">
+                <option value="SELL">SELL USDT</option>
+                <option value="BUY">BUY USDT</option>
+            </select>
         </div>
+        <div class="form-group">
+            <label>Payment Method</label>
+            <select id="ad-payment">
+                <option value="CBE">CBE (Commercial Bank of Ethiopia)</option>
+                <option value="Telebirr">Telebirr</option>
+                <option value="BOA">Bank of Abyssinia</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Price per USDT (ETB)</label>
+            <input type="number" id="ad-price" placeholder="140.50" step="0.1">
+        </div>
+        <div class="form-group">
+            <label>Total USDT Amount</label>
+            <input type="number" id="ad-amount" placeholder="50.00">
+        </div>
+        <div class="form-group">
+            <label>Account Number</label>
+            <input type="text" id="ad-acc-num" placeholder="100012345678">
+        </div>
+        <div class="form-group">
+            <label>Account Holder Name</label>
+            <input type="text" id="ad-acc-name" placeholder="Abebe B.">
+        </div>
+        <button class="btn" onclick="submitAd()">Publish Offer</button>
     </div>
 
-    <!-- Create Ad Tab -->
-    <div id="create-tab" class="tab-content">
-        <h3>Post P2P Advertisement</h3>
-        <div class="card">
-            <label>Trade Type</label>
-            <select id="ad-type"><option value="SELL">SELL USDT</option><option value="BUY">BUY USDT</option></select>
-
-            <label>Payment Method</label>
-            <select id="ad-payment"><option value="CBE">CBE</option><option value="Telebirr">Telebirr</option><option value="M-Pesa">M-Pesa</option></select>
-
-            <label>Price per 1 USDT (ETB)</label>
-            <input type="number" id="ad-price" placeholder="140.0">
-
-            <label>Total USDT Amount</label>
-            <input type="number" id="ad-amount" placeholder="100">
-
-            <label>Account Number</label>
-            <input type="text" id="ad-acc-num" placeholder="1000xxxx / 09xx">
-
-            <label>Account Holder Name</label>
-            <input type="text" id="ad-acc-name" placeholder="Abebe K.">
-
-            <button class="btn" onclick="submitAd()">Publish Ad</button>
+    <!-- Trade Escrow Modal -->
+    <div class="modal" id="trade-modal">
+        <div class="modal-content">
+            <h3>Initiate Trade</h3>
+            <p id="trade-info">Enter amount to buy:</p>
+            <div class="form-group">
+                <label>USDT Amount</label>
+                <input type="number" id="trade-amount" placeholder="10.0">
+            </div>
+            <button class="btn" id="confirm-trade-btn">Lock Funds in Escrow</button>
+            <button class="btn" style="background-color: var(--border-color); margin-top: 8px;" onclick="closeModal()">Cancel</button>
         </div>
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
+        // REPLACE WITH YOUR LIVE RENDER BASE URL
+        const API_BASE = "https://p2p-miniapp.onrender.com";
+
+        let tg = window.Telegram.WebApp;
         tg.expand();
 
-        // CHANGE THIS to your live FastAPI backend HTTPS URL (or ngrok link)
-        const API_BASE = "https://your-backend-domain.com"; 
+        let userId = tg.initDataUnsafe?.user?.id || 12345678;
+        let userName = tg.initDataUnsafe?.user?.first_name || "Trader";
+        document.getElementById('user-display').innerText = `@${userName}`;
 
-        const user = tg.initDataUnsafe?.user || { id: 12345678, first_name: "Demo User" };
-        document.getElementById("user-display").innerText = user.first_name;
+        let currentSelectedAdId = null;
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('visible'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active-tab'));
-            
-            if(tab === 'market') {
-                document.getElementById('market-tab').classList.add('visible');
-                loadMarket();
-            } else if(tab === 'wallet') {
-                document.getElementById('wallet-tab').classList.add('visible');
-                loadWallet();
-            } else if(tab === 'create') {
-                document.getElementById('create-tab').classList.add('visible');
+        async function fetchWallet() {
+            try {
+                const res = await fetch(`${API_BASE}/api/wallet/${userId}`);
+                const data = await res.json();
+                document.getElementById('wallet-balance').innerText = `${data.usdt_balance.toFixed(2)} USDT`;
+            } catch (err) {
+                console.error("Failed to load wallet balance:", err);
             }
         }
 
-        async function loadMarket() {
+        async function fetchMarketplace() {
             try {
                 const res = await fetch(`${API_BASE}/api/marketplace`);
                 const data = await res.json();
                 const container = document.getElementById('ads-container');
                 container.innerHTML = '';
 
-                data.ads.forEach(ad => {
-                    container.innerHTML += `
-                        <div class="card">
-                            <b>${ad.type} USDT</b> via <b>${ad.payment}</b>
-                            <p>Price: <b>${ad.price} ETB</b> | Avail: ${ad.total_amount} USDT</p>
-                            <p><small>Account: ${ad.acc_name} (${ad.acc_num})</small></p>
-                            <button class="btn" onclick="startTrade(${ad.id})">Trade Now</button>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                document.getElementById('ads-container').innerText = "Failed to load market data.";
-            }
-        }
+                if (data.ads.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary);">No active offers currently.</p>';
+                    return;
+                }
 
-        async function loadWallet() {
-            try {
-                const res = await fetch(`${API_BASE}/api/wallet/${user.id}`);
-                const data = await res.json();
-                document.getElementById('usdt-balance').innerText = data.usdt_balance.toFixed(2);
-            } catch (e) {
-                console.error("Wallet fetch error", e);
+                data.ads.forEach(ad => {
+                    const card = document.createElement('div');
+                    card.className = 'ad-card';
+                    card.innerHTML = `
+                        <div class="ad-header">
+                            <span class="seller-name">${ad.seller_name} (${ad.payment})</span>
+                            <span class="ad-price">${ad.price} ETB</span>
+                        </div>
+                        <div class="ad-details">
+                            Available: ${ad.total_amount} USDT<br>
+                            Limit: ${ad.min_limit} - ${ad.max_limit} USDT<br>
+                            Pay To: ${ad.acc_name} (${ad.acc_num})
+                        </div>
+                        <button class="btn" onclick="openTradeModal(${ad.id})">Buy USDT</button>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                document.getElementById('ads-container').innerText = 'Error connecting to backend.';
             }
         }
 
         async function submitAd() {
             const payload = {
-                user_id: user.id,
+                user_id: userId,
                 type: document.getElementById('ad-type').value,
                 payment: document.getElementById('ad-payment').value,
                 price: parseFloat(document.getElementById('ad-price').value),
@@ -179,22 +301,73 @@
                 acc_name: document.getElementById('ad-acc-name').value
             };
 
-            await fetch(`${API_BASE}/api/ads/create`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-
-            alert("Ad published successfully!");
-            switchTab('market');
+            try {
+                const res = await fetch(`${API_BASE}/api/ads/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (res.ok) {
+                    alert('Offer successfully published!');
+                    switchTab('market');
+                }
+            } catch (err) {
+                alert('Failed to submit offer.');
+            }
         }
 
-        function startTrade(adId) {
-            tg.sendData(JSON.stringify({ action: "buy", ad_id: adId }));
+        function openTradeModal(adId) {
+            currentSelectedAdId = adId;
+            document.getElementById('trade-modal').style.display = 'flex';
         }
 
-        // Initial load
-        loadMarket();
+        function closeModal() {
+            document.getElementById('trade-modal').style.display = 'none';
+        }
+
+        document.getElementById('confirm-trade-btn').onclick = async function() {
+            const amount = parseFloat(document.getElementById('trade-amount').value);
+            if (!amount) return alert('Enter valid amount');
+
+            try {
+                const res = await fetch(`${API_BASE}/api/trades/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        ad_id: currentSelectedAdId,
+                        buyer_id: userId,
+                        amount_usdt: amount
+                    })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert(`Trade #${data.trade.trade_id} Created!\nPlease transfer ${data.trade.fiat_amount} ETB to account ${data.trade.payment_info.acc_num} (${data.trade.payment_info.acc_name}).`);
+                    closeModal();
+                } else {
+                    alert('Error creating trade: ' + data.detail);
+                }
+            } catch (err) {
+                alert('Failed to initiate escrow trade.');
+            }
+        };
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            if (tab === 'market') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tab-market').style.display = 'block';
+                document.getElementById('tab-post').style.display = 'none';
+                fetchMarketplace();
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tab-market').style.display = 'none';
+                document.getElementById('tab-post').style.display = 'block';
+            }
+        }
+
+        // Initial Load
+        fetchWallet();
+        fetchMarketplace();
     </script>
 </body>
 </html>
