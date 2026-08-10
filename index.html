@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P2P Platform</title>
+  <title>P2P Trading Hub</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 15px; background: #18222d; color: #fff; margin: 0; }
@@ -65,6 +65,7 @@
     }
 
     function startKYC() {
+      alert("Closing app... Please attach and send the photos of your ID directly in the chat window!");
       tg.sendData(JSON.stringify({ action: "start_kyc" }));
       tg.close();
     }
