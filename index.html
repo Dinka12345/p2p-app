@@ -16,17 +16,29 @@
     .btn-ad { background: #2481cc; color: white; }
     .user-info { font-size: 0.85em; color: #8fa1b2; margin-bottom: 8px; }
     .grid { display: flex; gap: 10px; }
+    #status-msg { margin-top: 8px; font-weight: bold; color: #f1c40f; text-align: center; }
   </style>
 </head>
 <body>
 
   <h3>P2P Trading Hub</h3>
 
+  <!-- 1. REGISTRATION & ID UPLOAD -->
   <div class="card">
     <div class="user-info">User: <span id="user-name">Loading...</span> | ID: <span id="user-id">--</span></div>
-    <button class="btn-kyc" onclick="startKYC()">🪪 Upload National ID (Front & Back)</button>
+    <h4>🪪 ID Registration</h4>
+    
+    <label>Front Photo of ID:</label>
+    <input type="file" id="front-id" accept="image/*">
+
+    <label>Back Photo of ID:</label>
+    <input type="file" id="back-id" accept="image/*">
+
+    <button class="btn-kyc" onclick="submitKYC()">Submit ID Photos for Approval</button>
+    <div id="status-msg"></div>
   </div>
 
+  <!-- 2. DEPOSIT & WITHDRAWAL -->
   <div class="card">
     <h4>Deposit & Withdrawal</h4>
     <label for="trans-amount">Amount (ETB):</label>
@@ -37,6 +49,7 @@
     </div>
   </div>
 
+  <!-- 3. POST ADS -->
   <div class="card">
     <h4>Post P2P Ad</h4>
     <label for="ad-type">Type:</label>
@@ -58,16 +71,54 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
+    const BOT_TOKEN = "8214244948:AAH-SqF_uRFVy8PV_gRBbcoUYq2XxYBxXJA";
+    const ADMIN_ID = 8216936710; // <-- REPLACE WITH YOUR NUMERIC TELEGRAM ID
+
     const user = tg.initDataUnsafe?.user;
     if (user) {
       document.getElementById('user-name').innerText = user.first_name || user.username;
       document.getElementById('user-id').innerText = user.id;
     }
 
-    function startKYC() {
-      alert("Closing app... Please attach and send the photos of your ID directly in the chat window!");
-      tg.sendData(JSON.stringify({ action: "start_kyc" }));
-      tg.close();
+    async function submitKYC() {
+      const frontFile = document.getElementById('front-id').files[0];
+      const backFile = document.getElementById('back-id').files[0];
+      const statusDiv = document.getElementById('status-msg');
+
+      if (!frontFile || !backFile) {
+        alert("Please select BOTH Front and Back photos of your ID.");
+        return;
+      }
+
+      statusDiv.innerText = "Uploading photos to Admin... Please wait.";
+
+      try {
+        const userId = user ? user.id : "Unknown";
+        const userName = user ? (user.username || user.first_name) : "Unknown";
+
+        // Upload Front Photo to Admin
+        const frontData = new FormData();
+        frontData.append("chat_id", ADMIN_ID);
+        frontData.append("photo", frontFile);
+        frontData.append("caption", `🪪 FRONT ID\nUser: ${userName}\nID: ${userId}`);
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: frontData });
+
+        // Upload Back Photo to Admin
+        const backData = new FormData();
+        backData.append("chat_id", ADMIN_ID);
+        backData.append("photo", backFile);
+        backData.append("caption", `🪪 BACK ID\nUser: ${userName}\nID: ${userId}`);
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: backData });
+
+        statusDiv.innerText = "Photos sent successfully!";
+
+        // Notify python backend
+        tg.sendData(JSON.stringify({ action: "kyc_submitted" }));
+        tg.close();
+      } catch (err) {
+        alert("Upload failed. Ensure ADMIN_ID is correct and try again.");
+        statusDiv.innerText = "";
+      }
     }
 
     function submitTransaction(actionType) {
