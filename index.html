@@ -3,57 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P2P Wallet & Market</title>
+  <title>P2P Trading Platform</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 15px; background: #18222d; color: #fff; margin: 0; }
     .card { background: #222e3c; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-    .user-info { font-size: 0.9em; color: #8fa1b2; margin-bottom: 10px; }
-    input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334455; background: #10171e; color: white; box-sizing: border-box; }
+    input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334455; background: #10171e; color: white; box-sizing: border-box; }
     button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-    .btn-deposit { background: #2baf60; color: white; }
-    .btn-withdraw { background: #e53935; color: white; }
+    .btn-primary { background: #2481cc; color: white; }
+    .btn-success { background: #2baf60; color: white; }
+    .user-info { font-size: 0.85em; color: #8fa1b2; margin-bottom: 8px; }
   </style>
 </head>
 <body>
-  <h3>P2P Account Management</h3>
+
+  <h3>P2P Trading Dashboard</h3>
 
   <div class="card">
     <div class="user-info">
       User: <span id="user-name">Loading...</span> | ID: <span id="user-id">--</span>
     </div>
-    <label for="amount">Amount (ETB):</label>
-    <input type="number" id="amount" placeholder="Enter amount..." min="1" step="any">
+    <button class="btn-primary" onclick="requestRegistration()">Submit Registration to Admin</button>
+  </div>
 
-    <button class="btn-deposit" onclick="submitTransaction('deposit')">Deposit Funds</button>
-    <button class="btn-withdraw" onclick="submitTransaction('withdraw')">Withdraw Funds</button>
+  <div class="card">
+    <h4>Create Buy/Sell Ad</h4>
+    <label for="ad-type">Type:</label>
+    <select id="ad-type">
+      <option value="BUY">BUY USDT</option>
+      <option value="SELL">SELL USDT</option>
+    </select>
+
+    <label for="amount">Amount (USDT):</label>
+    <input type="number" id="amount" placeholder="e.g. 100">
+
+    <label for="rate">Rate (ETB):</label>
+    <input type="number" id="rate" placeholder="e.g. 118.5">
+
+    <button class="btn-success" onclick="postAd()">Post Trade Ad</button>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Retrieve active Telegram user details
     const user = tg.initDataUnsafe?.user;
     if (user) {
       document.getElementById('user-name').innerText = user.first_name || user.username;
       document.getElementById('user-id').innerText = user.id;
-    } else {
-      document.getElementById('user-name').innerText = "Guest Mode";
     }
 
-    function submitTransaction(actionType) {
-      const amountVal = parseFloat(document.getElementById('amount').value);
+    function requestRegistration() {
+      tg.sendData(JSON.stringify({
+        action: "request_registration"
+      }));
+      tg.close();
+    }
 
-      if (!amountVal || amountVal <= 0) {
-        alert("Please enter a valid amount.");
+    function postAd() {
+      const adType = document.getElementById('ad-type').value;
+      const amount = parseFloat(document.getElementById('amount').value);
+      const rate = parseFloat(document.getElementById('rate').value);
+
+      if (!amount || !rate) {
+        alert("Please fill in valid amount and rate.");
         return;
       }
 
-      // Send payload back to Aiogram bot handler
       tg.sendData(JSON.stringify({
-        action: actionType,
-        amount: amountVal
+        action: "create_ad",
+        ad_type: adType,
+        amount: amount,
+        rate: rate
       }));
 
       tg.close();
