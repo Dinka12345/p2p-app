@@ -9,28 +9,17 @@
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 15px; background: #18222d; color: #fff; margin: 0; }
     .card { background: #222e3c; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
     input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334455; background: #10171e; color: white; box-sizing: border-box; }
-    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-    .btn-deposit { background: #2baf60; color: white; }
-    .btn-withdraw { background: #e53935; color: white; }
-    .btn-ad { background: #2481cc; color: white; }
-    .user-info { font-size: 0.85em; color: #8fa1b2; margin-bottom: 8px; }
-    .grid { display: flex; gap: 10px; }
+    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; background: #2481cc; color: white; }
+    .status-box { margin-top: 10px; font-weight: bold; text-align: center; }
   </style>
 </head>
 <body>
 
   <h3>P2P Exchange Desk</h3>
 
-  <!-- USER INFO HEADER -->
-  <div class="card">
-    <div class="user-info">Account: <span id="user-name">Loading...</span> | ID: <span id="user-id">--</span></div>
-    <div style="color: #2baf60; font-size: 0.9em; font-weight: bold;">🟢 Identity Verified</div>
-  </div>
-
-  <!-- POST ADS CARD -->
   <div class="card">
     <h4>📢 Post Trade Ad</h4>
-    <label for="ad-type">Trade Type:</label>
+    <label for="ad-type">Type:</label>
     <select id="ad-type">
       <option value="BUY">BUY USDT</option>
       <option value="SELL">SELL USDT</option>
@@ -39,66 +28,63 @@
     <label for="ad-amount">Amount (USDT):</label>
     <input type="number" id="ad-amount" placeholder="e.g. 100">
 
-    <label for="ad-rate">Rate per USDT (ETB):</label>
+    <label for="ad-rate">Rate (ETB):</label>
     <input type="number" id="ad-rate" placeholder="e.g. 118.5">
 
-    <button class="btn-ad" onclick="postAd()">Post Advertisement</button>
-  </div>
-
-  <!-- BALANCE TRANSACTIONS CARD -->
-  <div class="card">
-    <h4>💳 Deposit / Withdraw</h4>
-    <label for="trans-amount">Amount (ETB):</label>
-    <input type="number" id="trans-amount" placeholder="Enter ETB amount">
-    <div class="grid">
-      <button class="btn-deposit" onclick="submitTransaction('deposit')">Deposit</button>
-      <button class="btn-withdraw" onclick="submitTransaction('withdraw')">Withdraw</button>
-    </div>
+    <button onclick="postAd()">Post Advertisement</button>
+    <div id="status-msg" class="status-box"></div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-      document.getElementById('user-name').innerText = user.first_name || user.username;
-      document.getElementById('user-id').innerText = user.id;
-    }
+    // Replace LOCAL_SERVER_URL with your local IP or public tunnel URL if hosting remotely
+    const API_URL = "http://localhost:8080/api/create_ad";
 
-    function postAd() {
+    async function postAd() {
+      const user = tg.initDataUnsafe?.user;
+      const statusDiv = document.getElementById('status-msg');
+      
       const adType = document.getElementById('ad-type').value;
       const amount = parseFloat(document.getElementById('ad-amount').value);
       const rate = parseFloat(document.getElementById('ad-rate').value);
 
       if (!amount || amount <= 0 || !rate || rate <= 0) {
-        alert("Please enter a valid amount and rate.");
+        alert("Please enter valid amount and rate.");
         return;
       }
 
-      tg.sendData(JSON.stringify({
-        action: "create_ad",
-        ad_type: adType,
-        amount: amount,
-        rate: rate
-      }));
+      statusDiv.style.color = "#f1c40f";
+      statusDiv.innerText = "Posting advertisement...";
 
-      tg.close();
-    }
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            user_id: user ? user.id : 0,
+            ad_type: adType,
+            amount: amount,
+            rate: rate
+          })
+        });
 
-    function submitTransaction(actionType) {
-      const amount = parseFloat(document.getElementById('trans-amount').value);
-      if (!amount || amount <= 0) {
-        alert("Please enter a valid amount.");
-        return;
+        const result = await response.json();
+
+        if (result.success) {
+          statusDiv.style.color = "#2ecc71";
+          statusDiv.innerText = "✅ " + result.message;
+          document.getElementById('ad-amount').value = "";
+          document.getElementById('ad-rate').value = "";
+        } else {
+          statusDiv.style.color = "#e74c3c";
+          statusDiv.innerText = "❌ " + result.message;
+        }
+      } catch (err) {
+        statusDiv.style.color = "#e74c3c";
+        statusDiv.innerText = "❌ Connection error. Ensure backend is running.";
       }
-
-      tg.sendData(JSON.stringify({
-        action: actionType,
-        amount: amount
-      }));
-
-      tg.close();
     }
   </script>
 </body>
