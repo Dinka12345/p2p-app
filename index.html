@@ -16,10 +16,10 @@
             --accent-yellow: #fbd743;
             --accent-green: #0ecb81;
             --accent-red: #f04a5d;
-            --accent-purple: #8a2be2;
             --btn-bg: #2b3139;
             --warning-border: #8d6e16;
             --warning-bg: #262115;
+            --icon-bg: #2b3139;
         }
 
         body {
@@ -59,12 +59,7 @@
         .nav-item i { font-size: 18px; }
 
         /* HOME VIEW STYLES */
-        .header {
-            padding: 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        .header { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
         .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
         .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; }
@@ -147,98 +142,81 @@
         .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .note-card strong { color: var(--accent-yellow); }
 
-        /* WALLET VIEW STYLES (Matches your image) */
+        /* WALLET VIEW STYLES */
         .wallet-container { padding: 16px; }
         .wallet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .wallet-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
         .wallet-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
 
-        .warning-box {
-            background-color: var(--warning-bg);
-            border: 1px solid var(--warning-border);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 16px;
-            font-size: 12px;
-            line-height: 1.5;
-            color: #d1d4dc;
-        }
+        .warning-box { background-color: var(--warning-bg); border: 1px solid var(--warning-border); border-radius: 12px; padding: 14px; margin-bottom: 16px; font-size: 12px; line-height: 1.5; color: #d1d4dc; }
         .warning-box i { color: var(--accent-yellow); margin-right: 4px; font-size: 14px; }
         .warning-box strong { color: var(--accent-yellow); font-weight: bold; }
 
-        .total-balance-card {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
+        .total-balance-card { background-color: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
         .balance-label { font-size: 11px; color: var(--text-muted); }
         .total-amount { font-size: 26px; font-weight: bold; margin: 6px 0 2px 0; }
         .currency-sub { font-size: 11px; color: var(--text-muted); }
 
-        .balance-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-        .balance-subcard {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 12px;
-        }
+        .balance-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+        .balance-subcard { background-color: var(--bg-card); border-radius: 12px; padding: 12px; }
         .subcard-header { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
         .subcard-amount { font-size: 18px; font-weight: bold; }
         .subcard-amount.green { color: var(--accent-green); }
         .subcard-amount.yellow { color: var(--accent-yellow); }
 
-        .wallet-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .action-tile {
-            border-radius: 12px;
-            padding: 16px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-            font-size: 13px;
-        }
+        .wallet-actions { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .action-tile { border-radius: 12px; padding: 16px 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; cursor: pointer; border: none; font-weight: bold; font-size: 13px; }
         .action-tile.deposit { background-color: var(--accent-green); color: #000; }
         .action-tile.withdraw { background-color: var(--accent-yellow); color: #000; }
         .action-tile.history { background-color: var(--bg-card); color: #ffffff; }
         .action-tile i { font-size: 18px; }
-        .action-tile.history i {
-            color: var(--accent-yellow);
-            border: 1px solid var(--accent-yellow);
-            border-radius: 50%;
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-        }
+        .action-tile.history i { color: var(--accent-yellow); border: 1px solid var(--accent-yellow); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 
-        .bonus-card {
-            background-color: #171622;
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            border-radius: 12px;
-            padding: 16px;
-        }
+        .bonus-card { background-color: #171622; border: 1px solid rgba(138, 43, 226, 0.2); border-radius: 12px; padding: 16px; }
         .bonus-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
         .bonus-icon { width: 32px; height: 32px; background-color: rgba(138, 43, 226, 0.2); border-radius: 8px; color: #a855f7; display: flex; justify-content: center; align-items: center; font-size: 16px; }
         .bonus-title h3 { margin: 0; font-size: 14px; color: #fff; }
         .bonus-title p { margin: 2px 0 0 0; font-size: 11px; color: var(--text-muted); }
         .bonus-balance { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; }
         .bonus-val { font-size: 18px; font-weight: bold; color: #a855f7; }
+
+        /* MORE VIEW STYLES (Matches your image) */
+        .more-container { padding: 16px; }
+        .more-header { margin-bottom: 20px; }
+        .more-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .more-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+
+        .menu-list { display: flex; flex-direction: column; gap: 12px; }
+        .menu-item {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .menu-item:active { background-color: var(--btn-bg); }
+
+        .menu-icon-bg {
+            width: 44px;
+            height: 44px;
+            background-color: var(--icon-bg);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .menu-icon-bg.yellow-icon { color: var(--accent-yellow); }
+        .menu-icon-bg.red-icon { color: var(--accent-red); }
+
+        .menu-text { display: flex; flex-direction: column; gap: 2px; }
+        .menu-title { font-size: 15px; font-weight: bold; color: #ffffff; }
+        .menu-sub { font-size: 12px; color: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -400,7 +378,7 @@
         </div>
     </div>
 
-    <!-- WALLET VIEW (Matches your image) -->
+    <!-- WALLET VIEW -->
     <div id="wallet" class="view">
         <div class="wallet-container">
             <div class="wallet-header">
@@ -471,11 +449,71 @@
         </div>
     </div>
 
-    <!-- MORE VIEW -->
+    <!-- MORE VIEW (Matches your image) -->
     <div id="more" class="view">
-        <div style="padding:16px;">
-            <h2>More</h2>
-            <p style="color: var(--text-muted);">App settings and support...</p>
+        <div class="more-container">
+            <div class="more-header">
+                <h1>More</h1>
+                <p>Additional options and settings</p>
+            </div>
+
+            <div class="menu-list">
+                <div class="menu-item" onclick="openMoreOption('view_profile')">
+                    <div class="menu-icon-bg"><i class="fa-regular fa-user"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">View Profile</div>
+                        <div class="menu-sub">See your profile details</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('payment_accounts')">
+                    <div class="menu-icon-bg"><i class="fa-regular fa-credit-card"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Payment Accounts</div>
+                        <div class="menu-sub">Manage your payment methods</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('bonus_rewards')">
+                    <div class="menu-icon-bg yellow-icon"><i class="fa-solid fa-ribbon"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Bonus and Rewards</div>
+                        <div class="menu-sub">Earn points and win prizes</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('referral_program')">
+                    <div class="menu-icon-bg yellow-icon"><i class="fa-solid fa-gift"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Referral Program</div>
+                        <div class="menu-sub">Invite friends and earn rewards</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('security')">
+                    <div class="menu-icon-bg red-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Security</div>
+                        <div class="menu-sub">Manage your secret code (password)</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('contact_center')">
+                    <div class="menu-icon-bg"><i class="fa-regular fa-comment-dots"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">Contact Center</div>
+                        <div class="menu-sub">Get support from our team</div>
+                    </div>
+                </div>
+
+                <div class="menu-item" onclick="openMoreOption('how_to_use')">
+                    <div class="menu-icon-bg"><i class="fa-solid fa-book-open"></i></div>
+                    <div class="menu-text">
+                        <div class="menu-title">How to Use Guide</div>
+                        <div class="menu-sub">Learn how to use the platform</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -553,31 +591,19 @@
             }
         }
 
-        function refreshOrders() {
-            tg.sendData(JSON.stringify({ action: "refresh_orders" }));
+        function openMoreOption(action) {
+            tg.sendData(JSON.stringify({ action: action }));
         }
 
-        function refreshWallet() {
-            tg.sendData(JSON.stringify({ action: "refresh_wallet" }));
-        }
-
-        function handleDeposit() {
-            tg.sendData(JSON.stringify({ action: "open_deposit" }));
-        }
-
-        function handleWithdraw() {
-            tg.sendData(JSON.stringify({ action: "open_withdraw" }));
-        }
-
-        function handleHistory() {
-            tg.sendData(JSON.stringify({ action: "open_wallet_history" }));
-        }
-
+        function refreshOrders() { tg.sendData(JSON.stringify({ action: "refresh_orders" })); }
+        function refreshWallet() { tg.sendData(JSON.stringify({ action: "refresh_wallet" })); }
+        function handleDeposit() { tg.sendData(JSON.stringify({ action: "open_deposit" })); }
+        function handleWithdraw() { tg.sendData(JSON.stringify({ action: "open_withdraw" })); }
+        function handleHistory() { tg.sendData(JSON.stringify({ action: "open_wallet_history" })); }
         function filterAds(type, element) {
             document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
         }
-
         function startTrade(traderName, rate) {
             tg.showConfirm(`Initiate order with ${traderName} at ${rate} ETB?`, function(confirmed) {
                 if (confirmed) {
@@ -585,11 +611,7 @@
                 }
             });
         }
-
-        function createNewAd() {
-            tg.sendData(JSON.stringify({ action: "open_create_ad_form" }));
-        }
-
+        function createNewAd() { tg.sendData(JSON.stringify({ action: "open_create_ad_form" })); }
         function toggleOnlineStatus() {
             const isChecked = document.getElementById('keepOnlineToggle').checked;
             tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
