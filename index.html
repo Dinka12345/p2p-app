@@ -7,71 +7,273 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --bg-main: #13151b; --bg-card: #1e2329; --text-main: #ffffff; --text-muted: #848e9c; --accent-red: #f04a5d; --accent-yellow: #fbd743; --btn-bg: #2b3139; }
-        body { margin: 0; background-color: var(--bg-main); color: var(--text-main); font-family: sans-serif; padding-bottom: 80px; }
-        
+        :root {
+            --bg-main: #13151b;
+            --bg-card: #1e2329;
+            --bg-note: #1a1e24;
+            --text-main: #ffffff;
+            --text-muted: #848e9c;
+            --accent-yellow: #fbd743;
+            --accent-green: #2ebd85;
+            --btn-bg: #2b3139;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: 75px;
+        }
+
         /* Tab Views */
-        .view { display: none; padding: 16px; }
+        .view { display: none; }
         .view.active { display: block; }
 
         /* Bottom Navigation */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background-color: var(--bg-main); border-top: 1px solid var(--btn-bg); display: flex; justify-content: space-around; padding: 10px 0; z-index: 1000; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 10px; gap: 4px; cursor: pointer; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background-color: var(--bg-main);
+            border-top: 1px solid var(--btn-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 10px;
+            gap: 4px;
+            cursor: pointer;
+        }
         .nav-item.active { color: var(--accent-yellow); }
         .nav-item i { font-size: 18px; }
+
+        /* ADS VIEW SPECIFIC STYLES */
+        .ads-container { padding: 16px; }
+
+        .ads-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .ads-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .ads-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
         
-        /* Basic Styling for content */
-        .card { background-color: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; }
+        .btn-create-top {
+            background-color: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Keep Me Online Box */
+        .online-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .online-info { display: flex; align-items: center; gap: 10px; }
+        .green-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; }
+        .online-title { font-size: 14px; font-weight: bold; margin: 0; }
+        .online-sub { font-size: 11px; color: var(--text-muted); margin: 2px 0 0 0; }
+
+        /* Toggle Switch */
+        .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--btn-bg); transition: .3s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-green); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        /* Ads Filter Bar */
+        .filter-bar {
+            display: flex;
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 30px;
+        }
+        .filter-btn {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .filter-btn.active {
+            background-color: var(--accent-yellow);
+            color: #000;
+            font-weight: bold;
+        }
+        .filter-btn.accounts-btn { color: var(--accent-green); }
+
+        /* Empty State Box */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0 30px 0;
+        }
+        .empty-icon {
+            width: 60px; height: 60px;
+            background-color: var(--btn-bg);
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            color: var(--text-muted);
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        .empty-title { font-size: 16px; font-weight: bold; margin: 0 0 6px 0; }
+        .empty-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 16px 0; }
+        
+        .btn-create-center {
+            background-color: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        /* Note Container */
+        .note-card {
+            background-color: var(--bg-note);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 16px;
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+        .note-card strong { color: var(--accent-yellow); }
+
     </style>
 </head>
 <body>
 
     <!-- Home View -->
     <div id="home" class="view active">
-        <h2>Home</h2>
-        <div class="card">P2P Trading Market goes here...</div>
+        <div style="padding:16px;">
+            <h2>Home Market</h2>
+            <p style="color: var(--text-muted);">P2P Market view placeholder...</p>
+        </div>
     </div>
 
     <!-- Orders View -->
     <div id="orders" class="view">
-        <h2>My Orders</h2>
-        <div class="card">No active orders found.</div>
+        <div style="padding:16px;">
+            <h2>Orders</h2>
+            <p style="color: var(--text-muted);">Active trades placeholder...</p>
+        </div>
     </div>
 
-    <!-- Ads View -->
+    <!-- Ads View (Matches your screenshot) -->
     <div id="ads" class="view">
-        <h2>Ads</h2>
-        <div class="card">Post your P2P advertisement.</div>
+        <div class="ads-container">
+            <div class="ads-header">
+                <div>
+                    <h1>My Ads</h1>
+                    <p>Manage your buy and sell offers</p>
+                </div>
+                <button class="btn-create-top" onclick="createNewAd()">Create</button>
+            </div>
+
+            <div class="online-card">
+                <div class="online-info">
+                    <div class="green-dot"></div>
+                    <div>
+                        <p class="online-title">Keep Me Online</p>
+                        <p class="online-sub">Always visible to traders</p>
+                    </div>
+                </div>
+                <label class="switch">
+                    <input type="checkbox" checked id="keepOnlineToggle" onchange="toggleOnlineStatus()">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterAds('all', this)">All</button>
+                <button class="filter-btn" onclick="filterAds('buy', this)">Buy</button>
+                <button class="filter-btn" onclick="filterAds('sell', this)">Sell</button>
+                <button class="filter-btn accounts-btn" onclick="filterAds('accounts', this)">Accounts</button>
+            </div>
+
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <p class="empty-title">No Ads Yet</p>
+                <p class="empty-sub">Create your first ad to start trading</p>
+                <button class="btn-create-center" onclick="createNewAd()">Create Your First Ad</button>
+            </div>
+
+            <div class="note-card">
+                <strong>Note:</strong> You can create a maximum of 1 Buy ad and 1 Sell ad. Multiple ads of the same type are not allowed.
+            </div>
+        </div>
     </div>
 
     <!-- Wallet View -->
     <div id="wallet" class="view">
-        <h2>Wallet</h2>
-        <div class="card">Balance: 0.00 USDT</div>
+        <div style="padding:16px;">
+            <h2>Wallet</h2>
+            <p style="color: var(--text-muted);">Wallet balance placeholder...</p>
+        </div>
     </div>
 
     <!-- More View -->
     <div id="more" class="view">
-        <h2>More</h2>
-        <div class="card">Settings, Support, etc.</div>
+        <div style="padding:16px;">
+            <h2>More</h2>
+            <p style="color: var(--text-muted);">Settings placeholder...</p>
+        </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <i class="fa-solid fa-house"></i><span>Home</span>
+        <div class="nav-item" onclick="switchTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
         </div>
         <div class="nav-item" onclick="switchTab('orders', this)">
-            <i class="fa-regular fa-file-lines"></i><span>Orders</span>
+            <i class="fa-regular fa-file-lines"></i>
+            <span>Orders</span>
         </div>
-        <div class="nav-item" onclick="switchTab('ads', this)">
-            <i class="fa-solid fa-bullhorn"></i><span>Ads</span>
+        <div class="nav-item active" onclick="switchTab('ads', this)">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Ads</span>
         </div>
         <div class="nav-item" onclick="switchTab('wallet', this)">
-            <i class="fa-solid fa-wallet"></i><span>Wallet</span>
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
         </div>
         <div class="nav-item" onclick="switchTab('more', this)">
-            <i class="fa-solid fa-ellipsis"></i><span>More</span>
+            <i class="fa-solid fa-ellipsis"></i>
+            <span>More</span>
         </div>
     </div>
 
@@ -80,15 +282,25 @@
         tg.expand();
 
         function switchTab(tabId, element) {
-            // Hide all views
             document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-            // Remove active class from nav items
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             
-            // Show selected view
             document.getElementById(tabId).classList.add('active');
-            // Set active class on clicked nav item
             element.classList.add('active');
+        }
+
+        function filterAds(type, element) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function createNewAd() {
+            tg.sendData(JSON.stringify({ action: "open_create_ad_form" }));
+        }
+
+        function toggleOnlineStatus() {
+            const isChecked = document.getElementById('keepOnlineToggle').checked;
+            tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
         }
     </script>
 </body>
