@@ -14,7 +14,8 @@
             --text-main: #ffffff;
             --text-muted: #848e9c;
             --accent-yellow: #fbd743;
-            --accent-green: #2ebd85;
+            --accent-green: #0ecb81;
+            --accent-red: #f04a5d;
             --btn-bg: #2b3139;
         }
 
@@ -27,11 +28,11 @@
             padding-bottom: 75px;
         }
 
-        /* Tab Views */
+        /* Views */
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Bottom Navigation */
+        /* Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -54,45 +55,109 @@
         .nav-item.active { color: var(--accent-yellow); }
         .nav-item i { font-size: 18px; }
 
-        /* ADS VIEW SPECIFIC STYLES */
-        .ads-container { padding: 16px; }
+        /* HOME VIEW STYLES */
+        .header {
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+        .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; }
 
-        .ads-header {
+        /* Buy / Sell Toggle Buttons */
+        .toggle-container {
+            display: flex;
+            padding: 0 16px 16px 16px;
+            gap: 10px;
+        }
+        .home-toggle-btn {
+            background-color: var(--btn-bg);
+            color: var(--text-muted);
+            border: none;
+            padding: 8px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .home-toggle-btn.active-buy {
+            background-color: var(--accent-green);
+            color: white;
+        }
+        .home-toggle-btn.active-sell {
+            background-color: var(--accent-red);
+            color: white;
+        }
+
+        /* Order Cards */
+        .order-list { padding: 0 16px; }
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .card-header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
             margin-bottom: 16px;
         }
-        .ads-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
-        .ads-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
-        
-        .btn-create-top {
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 40px; height: 40px;
             background-color: var(--accent-yellow);
-            color: #000;
+            color: black;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 18px;
+            position: relative;
+        }
+        .online-dot {
+            position: absolute; bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            background-color: var(--accent-green);
+            border: 2px solid var(--bg-card);
+            border-radius: 50%;
+        }
+        .user-details h3 { margin: 0; font-size: 15px; }
+        .user-stats { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
+        .user-stats i { color: var(--accent-yellow); font-size: 10px; }
+        
+        .action-btn {
             border: none;
-            padding: 8px 18px;
-            border-radius: 8px;
+            padding: 6px 18px;
+            border-radius: 6px;
             font-weight: bold;
-            font-size: 13px;
+            color: white;
             cursor: pointer;
         }
+        .action-btn.buy-bg { background-color: var(--accent-green); }
+        .action-btn.sell-bg { background-color: var(--accent-red); }
 
-        /* Keep Me Online Box */
-        .online-card {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+        .card-details { display: flex; justify-content: space-between; font-size: 12px; }
+        .detail-col { display: flex; flex-direction: column; gap: 4px; }
+        .label { color: var(--text-muted); text-transform: uppercase; font-size: 10px; margin-bottom: 4px; }
+        .price-val { font-size: 18px; font-weight: bold; color: white; }
+        .limit-val { font-size: 13px; color: white; font-weight: 500; }
+        .payment-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .tag { background-color: var(--btn-bg); color: var(--text-muted); padding: 4px 8px; border-radius: 4px; font-size: 10px; }
+
+        /* ADS VIEW STYLES */
+        .ads-container { padding: 16px; }
+        .ads-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .ads-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .ads-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+        .btn-create-top { background-color: var(--accent-yellow); color: #000; border: none; padding: 8px 18px; border-radius: 8px; font-weight: bold; font-size: 13px; cursor: pointer; }
+
+        .online-card { background-color: var(--bg-card); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .online-info { display: flex; align-items: center; gap: 10px; }
         .green-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; }
         .online-title { font-size: 14px; font-weight: bold; margin: 0; }
         .online-sub { font-size: 11px; color: var(--text-muted); margin: 2px 0 0 0; }
 
-        /* Toggle Switch */
         .switch { position: relative; display: inline-block; width: 44px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--btn-bg); transition: .3s; border-radius: 24px; }
@@ -100,97 +165,110 @@
         input:checked + .slider { background-color: var(--accent-green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        /* Ads Filter Bar */
-        .filter-bar {
-            display: flex;
-            background-color: var(--bg-card);
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 30px;
-        }
-        .filter-btn {
-            flex: 1;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 0;
-            font-size: 13px;
-            font-weight: 500;
-            border-radius: 6px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .filter-btn.active {
-            background-color: var(--accent-yellow);
-            color: #000;
-            font-weight: bold;
-        }
+        .filter-bar { display: flex; background-color: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 30px; }
+        .filter-btn { flex: 1; background: none; border: none; color: var(--text-muted); padding: 8px 0; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; text-align: center; }
+        .filter-btn.active { background-color: var(--accent-yellow); color: #000; font-weight: bold; }
         .filter-btn.accounts-btn { color: var(--accent-green); }
 
-        /* Empty State Box */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 20px 0 30px 0;
-        }
-        .empty-icon {
-            width: 60px; height: 60px;
-            background-color: var(--btn-bg);
-            border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            color: var(--text-muted);
-            font-size: 24px;
-            margin-bottom: 16px;
-        }
+        .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0 30px 0; }
+        .empty-icon { width: 60px; height: 60px; background-color: var(--btn-bg); border-radius: 50%; display: flex; justify-content: center; align-items: center; color: var(--text-muted); font-size: 24px; margin-bottom: 16px; }
         .empty-title { font-size: 16px; font-weight: bold; margin: 0 0 6px 0; }
         .empty-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 16px 0; }
-        
-        .btn-create-center {
-            background-color: var(--accent-yellow);
-            color: #000;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-        }
+        .btn-create-center { background-color: var(--accent-yellow); color: #000; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
 
-        /* Note Container */
-        .note-card {
-            background-color: var(--bg-note);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 12px;
-            color: var(--text-muted);
-            line-height: 1.5;
-        }
+        .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .note-card strong { color: var(--accent-yellow); }
-
     </style>
 </head>
 <body>
 
-    <!-- Home View -->
+    <!-- HOME VIEW -->
     <div id="home" class="view active">
-        <div style="padding:16px;">
-            <h2>Home Market</h2>
-            <p style="color: var(--text-muted);">P2P Market view placeholder...</p>
+        <div class="header">
+            <div>
+                <h1>AllP2P</h1>
+                <p>Trade USDT with local currency</p>
+            </div>
+            <div class="info-icon">i</div>
+        </div>
+
+        <div class="toggle-container">
+            <button id="buyToggleBtn" class="home-toggle-btn active-buy" onclick="setHomeMarketMode('buy')">Buy</button>
+            <button id="sellToggleBtn" class="home-toggle-btn" onclick="setHomeMarketMode('sell')">Sell</button>
+        </div>
+
+        <div class="order-list" id="homeOrderList">
+            <!-- BUY LIST (Shown when 'Buy' tab is active) -->
+            <div id="buyMarketList">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <div class="avatar">W<div class="online-dot"></div></div>
+                            <div class="user-details">
+                                <h3>Worldcup2026</h3>
+                                <p class="user-stats"><i class="fa-solid fa-star"></i> 91% | 6 orders</p>
+                            </div>
+                        </div>
+                        <button class="action-btn buy-bg" onclick="startTrade('Worldcup2026', '187.00')">Buy</button>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Price</span><span class="price-val">187.00 <span style="font-size:11px;">ETB</span></span></div>
+                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">5,000.00 -<br>7,526.75 ETB</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">CBE</span><span class="tag">Abyssinia</span><span class="tag">+1</span></div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <div class="avatar">W<div class="online-dot"></div></div>
+                            <div class="user-details">
+                                <h3>welay36</h3>
+                                <p class="user-stats"><i class="fa-solid fa-star"></i> 92% | 15 orders</p>
+                            </div>
+                        </div>
+                        <button class="action-btn buy-bg" onclick="startTrade('welay36', '187.25')">Buy</button>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Price</span><span class="price-val">187.25 <span style="font-size:11px;">ETB</span></span></div>
+                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">3,000.00 -<br>51,842.03 ETB</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">Telebirr</span><span class="tag">Awash</span></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SELL LIST (Shown when 'Sell' tab is active) -->
+            <div id="sellMarketList" style="display: none;">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <div class="avatar">A<div class="online-dot"></div></div>
+                            <div class="user-details">
+                                <h3>Ashenafi Kus...</h3>
+                                <p class="user-stats"><i class="fa-solid fa-star"></i> 87.5% | 12 orders</p>
+                            </div>
+                        </div>
+                        <button class="action-btn sell-bg" onclick="startTrade('Ashenafi', '184.10')">Sell</button>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Price</span><span class="price-val">184.10 <span style="font-size:11px;">ETB</span></span></div>
+                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">2,000.00 -<br>3,000.00 ETB</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">CBE Birr</span><span class="tag">Telebirr</span></div></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Orders View -->
+    <!-- ORDERS VIEW -->
     <div id="orders" class="view">
         <div style="padding:16px;">
             <h2>Orders</h2>
-            <p style="color: var(--text-muted);">Active trades placeholder...</p>
+            <p style="color: var(--text-muted);">Active trade order history will show here...</p>
         </div>
     </div>
 
-    <!-- Ads View (Matches your screenshot) -->
+    <!-- ADS VIEW -->
     <div id="ads" class="view">
         <div class="ads-container">
             <div class="ads-header">
@@ -223,9 +301,7 @@
             </div>
 
             <div class="empty-state">
-                <div class="empty-icon">
-                    <i class="fa-solid fa-chart-line"></i>
-                </div>
+                <div class="empty-icon"><i class="fa-solid fa-chart-line"></i></div>
                 <p class="empty-title">No Ads Yet</p>
                 <p class="empty-sub">Create your first ad to start trading</p>
                 <button class="btn-create-center" onclick="createNewAd()">Create Your First Ad</button>
@@ -237,25 +313,25 @@
         </div>
     </div>
 
-    <!-- Wallet View -->
+    <!-- WALLET VIEW -->
     <div id="wallet" class="view">
         <div style="padding:16px;">
             <h2>Wallet</h2>
-            <p style="color: var(--text-muted);">Wallet balance placeholder...</p>
+            <p style="color: var(--text-muted);">Asset balance overview...</p>
         </div>
     </div>
 
-    <!-- More View -->
+    <!-- MORE VIEW -->
     <div id="more" class="view">
         <div style="padding:16px;">
             <h2>More</h2>
-            <p style="color: var(--text-muted);">Settings placeholder...</p>
+            <p style="color: var(--text-muted);">App settings and support...</p>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav">
-        <div class="nav-item" onclick="switchTab('home', this)">
+        <div class="nav-item active" onclick="switchTab('home', this)">
             <i class="fa-solid fa-house"></i>
             <span>Home</span>
         </div>
@@ -263,7 +339,7 @@
             <i class="fa-regular fa-file-lines"></i>
             <span>Orders</span>
         </div>
-        <div class="nav-item active" onclick="switchTab('ads', this)">
+        <div class="nav-item" onclick="switchTab('ads', this)">
             <i class="fa-solid fa-bullhorn"></i>
             <span>Ads</span>
         </div>
@@ -281,17 +357,48 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // Switch main tab sections
         function switchTab(tabId, element) {
-            document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
         }
 
+        // Switch Home Buy/Sell Mode
+        function setHomeMarketMode(mode) {
+            const buyBtn = document.getElementById('buyToggleBtn');
+            const sellBtn = document.getElementById('sellToggleBtn');
+            const buyList = document.getElementById('buyMarketList');
+            const sellList = document.getElementById('sellMarketList');
+
+            if (mode === 'buy') {
+                buyBtn.className = 'home-toggle-btn active-buy';
+                sellBtn.className = 'home-toggle-btn';
+                buyList.style.display = 'block';
+                sellList.style.display = 'none';
+            } else {
+                sellBtn.className = 'home-toggle-btn active-sell';
+                buyBtn.className = 'home-toggle-btn';
+                sellList.style.display = 'block';
+                buyList.style.display = 'none';
+            }
+        }
+
+        // Filter Ads in 'My Ads' Section
         function filterAds(type, element) {
-            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
             element.classList.add('active');
+        }
+
+        // Action Handlers
+        function startTrade(traderName, rate) {
+            tg.showConfirm(`Initiate order with ${traderName} at ${rate} ETB?`, function(confirmed) {
+                if (confirmed) {
+                    tg.sendData(JSON.stringify({ action: "start_trade", trader: traderName, rate: rate }));
+                }
+            });
         }
 
         function createNewAd() {
