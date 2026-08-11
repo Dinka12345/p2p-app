@@ -10,6 +10,7 @@
         :root {
             --bg-main: #13151b;
             --bg-card: #1e2329;
+            --bg-input: #0b0e11;
             --bg-note: #1a1e24;
             --text-main: #ffffff;
             --text-muted: #848e9c;
@@ -20,6 +21,7 @@
             --warning-border: #8d6e16;
             --warning-bg: #262115;
             --icon-bg: #2b3139;
+            --border-green: #0ecb81;
         }
 
         body {
@@ -142,6 +144,196 @@
         .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .note-card strong { color: var(--accent-yellow); }
 
+        /* CREATE AD FORM MODAL STYLES (Matches your image) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--bg-main);
+            z-index: 2000;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .modal-overlay.active { display: block; }
+
+        .back-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .form-card {
+            background-color: var(--bg-card);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--text-main);
+            margin: 0 0 8px 0;
+        }
+
+        .ad-type-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .type-btn {
+            background-color: var(--bg-input);
+            border: 1px solid transparent;
+            border-radius: 12px;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .type-btn i { font-size: 16px; }
+        .type-btn .title { font-size: 13px; font-weight: bold; }
+        .type-btn .sub { font-size: 10px; opacity: 0.8; }
+
+        .type-btn.active-buy {
+            border-color: var(--accent-green);
+            background-color: rgba(14, 203, 129, 0.08);
+            color: var(--accent-green);
+        }
+
+        .type-btn.active-sell {
+            border-color: var(--accent-red);
+            background-color: rgba(240, 74, 93, 0.08);
+            color: var(--accent-red);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .input-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .custom-input {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid #2b3139;
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .custom-input:focus { border-color: var(--accent-yellow); }
+
+        .input-suffix {
+            position: absolute;
+            right: 14px;
+            font-size: 12px;
+            font-weight: bold;
+            color: var(--text-muted);
+        }
+
+        .input-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .limits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .payment-card-select {
+            background-color: var(--bg-input);
+            border: 1px solid transparent;
+            border-radius: 10px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .payment-card-select.selected {
+            border-color: var(--accent-green);
+            background-color: rgba(14, 203, 129, 0.05);
+        }
+
+        .payment-card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .payment-card-title { font-size: 13px; font-weight: bold; color: #fff; }
+        .payment-card-sub { font-size: 11px; color: var(--text-muted); }
+
+        .payment-card-check {
+            color: var(--accent-green);
+            font-size: 14px;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel {
+            background-color: var(--btn-bg);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: var(--accent-yellow);
+            color: #000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
         /* WALLET VIEW STYLES */
         .wallet-container { padding: 16px; }
         .wallet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
@@ -180,7 +372,7 @@
         .bonus-balance { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; }
         .bonus-val { font-size: 18px; font-weight: bold; color: #a855f7; }
 
-        /* MORE VIEW STYLES (Matches your image) */
+        /* MORE VIEW STYLES */
         .more-container { padding: 16px; }
         .more-header { margin-bottom: 20px; }
         .more-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -378,6 +570,105 @@
         </div>
     </div>
 
+    <!-- CREATE NEW AD MODAL (Matches your image) -->
+    <div id="createAdModal" class="modal-overlay">
+        <div class="back-nav" onclick="closeCreateAd()">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to My Ads</span>
+        </div>
+        
+        <h1 style="font-size: 20px; margin: 0 0 16px 0;">Create New Ad</h1>
+
+        <div class="form-card">
+            <!-- Ad Type -->
+            <div>
+                <div class="form-section-title">Ad Type</div>
+                <div class="ad-type-grid">
+                    <div id="typeBuyBtn" class="type-btn active-buy" onclick="selectAdType('buy')">
+                        <i class="fa-solid fa-arrow-trend-up"></i>
+                        <span class="title">I want to buy</span>
+                        <span class="sub">USDT with ETB</span>
+                    </div>
+                    <div id="typeSellBtn" class="type-btn" onclick="selectAdType('sell')">
+                        <i class="fa-solid fa-arrow-trend-down"></i>
+                        <span class="title">I want to sell</span>
+                        <span class="sub">USDT for ETB</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pricing -->
+            <div class="input-group">
+                <div class="form-section-title" style="margin-bottom:0;">Pricing</div>
+                <div class="input-label">Price per USDT (ETB)</div>
+                <div class="input-wrapper">
+                    <input type="number" id="adPrice" class="custom-input" value="58.50" step="0.01">
+                    <span class="input-suffix">ETB</span>
+                </div>
+                <div class="input-hint">Price range from 89.12 to 267.38 ETB</div>
+            </div>
+
+            <!-- Total Amount -->
+            <div class="input-group">
+                <div class="form-section-title" style="margin-bottom:0;">Total Amount</div>
+                <div class="input-label">Amount (USDT)</div>
+                <div class="input-wrapper">
+                    <input type="number" id="adAmount" class="custom-input" value="100.00" step="1">
+                </div>
+            </div>
+
+            <!-- Order Limits -->
+            <div class="input-group">
+                <div class="form-section-title" style="margin-bottom:0;">Order Limits</div>
+                <div class="limits-grid">
+                    <div>
+                        <div class="input-label">Min (ETB)</div>
+                        <input type="number" id="adMin" class="custom-input" value="200">
+                    </div>
+                    <div>
+                        <div class="input-label">Max (ETB)</div>
+                        <input type="number" id="adMax" class="custom-input" value="5000">
+                    </div>
+                </div>
+                <div class="input-hint">Limits must be between 200 and 5,000,000 ETB</div>
+            </div>
+
+            <!-- Payment Methods -->
+            <div class="input-group">
+                <div class="form-section-title" style="margin-bottom:4px;">Payment Methods</div>
+                <div class="payment-options">
+                    <div class="payment-card-select selected" onclick="togglePaymentSelect(this)">
+                        <div class="payment-card-info">
+                            <span class="payment-card-title">Telebirr</span>
+                            <span class="payment-card-sub">Temesigen Akililu lema</span>
+                        </div>
+                        <div class="payment-card-check"><i class="fa-solid fa-check"></i></div>
+                    </div>
+
+                    <div class="payment-card-select" onclick="togglePaymentSelect(this)">
+                        <div class="payment-card-info">
+                            <span class="payment-card-title">Telebirr</span>
+                            <span class="payment-card-sub">Temesigen Akililu lema</span>
+                        </div>
+                        <div class="payment-card-check" style="display:none;"><i class="fa-solid fa-check"></i></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terms (Optional) -->
+            <div class="input-group">
+                <div class="form-section-title" style="margin-bottom:0;">Terms (Optional)</div>
+                <textarea id="adTerms" class="custom-input" style="height: 70px; resize: none;" placeholder="Enter any special terms..."></textarea>
+            </div>
+
+            <!-- Actions -->
+            <div class="form-actions">
+                <button class="btn-cancel" onclick="closeCreateAd()">Cancel</button>
+                <button class="btn-submit" onclick="submitNewAd()">Create Ad</button>
+            </div>
+        </div>
+    </div>
+
     <!-- WALLET VIEW -->
     <div id="wallet" class="view">
         <div class="wallet-container">
@@ -449,7 +740,7 @@
         </div>
     </div>
 
-    <!-- MORE VIEW (Matches your image) -->
+    <!-- MORE VIEW -->
     <div id="more" class="view">
         <div class="more-container">
             <div class="more-header">
@@ -545,6 +836,8 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        let selectedType = 'buy';
+
         function switchTab(tabId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -591,10 +884,54 @@
             }
         }
 
-        function openMoreOption(action) {
-            tg.sendData(JSON.stringify({ action: action }));
+        function createNewAd() {
+            document.getElementById('createAdModal').classList.add('active');
         }
 
+        function closeCreateAd() {
+            document.getElementById('createAdModal').classList.remove('active');
+        }
+
+        function selectAdType(type) {
+            selectedType = type;
+            const buyBtn = document.getElementById('typeBuyBtn');
+            const sellBtn = document.getElementById('typeSellBtn');
+
+            if (type === 'buy') {
+                buyBtn.className = 'type-btn active-buy';
+                sellBtn.className = 'type-btn';
+            } else {
+                sellBtn.className = 'type-btn active-sell';
+                buyBtn.className = 'type-btn';
+            }
+        }
+
+        function togglePaymentSelect(element) {
+            const checkIcon = element.querySelector('.payment-card-check');
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                checkIcon.style.display = 'none';
+            } else {
+                element.classList.add('selected');
+                checkIcon.style.display = 'block';
+            }
+        }
+
+        function submitNewAd() {
+            const payload = {
+                action: "submit_ad",
+                type: selectedType,
+                price: document.getElementById('adPrice').value,
+                amount: document.getElementById('adAmount').value,
+                minLimit: document.getElementById('adMin').value,
+                maxLimit: document.getElementById('adMax').value,
+                terms: document.getElementById('adTerms').value
+            };
+            tg.sendData(JSON.stringify(payload));
+            closeCreateAd();
+        }
+
+        function openMoreOption(action) { tg.sendData(JSON.stringify({ action: action })); }
         function refreshOrders() { tg.sendData(JSON.stringify({ action: "refresh_orders" })); }
         function refreshWallet() { tg.sendData(JSON.stringify({ action: "refresh_wallet" })); }
         function handleDeposit() { tg.sendData(JSON.stringify({ action: "open_deposit" })); }
@@ -611,7 +948,6 @@
                 }
             });
         }
-        function createNewAd() { tg.sendData(JSON.stringify({ action: "open_create_ad_form" })); }
         function toggleOnlineStatus() {
             const isChecked = document.getElementById('keepOnlineToggle').checked;
             tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
