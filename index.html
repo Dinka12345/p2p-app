@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P2P Trading Hub</title>
+  <title>P2P Exchange Desk</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 15px; background: #18222d; color: #fff; margin: 0; }
@@ -19,6 +19,7 @@
 
   <div class="card">
     <h4>📢 Post Trade Ad</h4>
+    
     <label for="ad-type">Type:</label>
     <select id="ad-type">
       <option value="BUY">BUY USDT</option>
@@ -31,7 +32,8 @@
     <label for="ad-rate">Rate (ETB):</label>
     <input type="number" id="ad-rate" placeholder="e.g. 118.5">
 
-    <button onclick="postAd()">Post Advertisement</button>
+    <!-- type="button" prevents form reloads that trigger window closures -->
+    <button type="button" onclick="postAd(event)">Post Advertisement</button>
     <div id="status-msg" class="status-box"></div>
   </div>
 
@@ -39,10 +41,11 @@
     const tg = window.Telegram.WebApp;
     tg.expand();
 
-    // Replace LOCAL_SERVER_URL with your local IP or public tunnel URL if hosting remotely
-    const API_URL = "http://localhost:8080/api/create_ad";
+    const BOT_TOKEN = "8214244948:AAH-SqF_uRFVy8PV_gRBbcoUYq2XxYBxXJA";
 
-    async function postAd() {
+    async function postAd(e) {
+      if (e) e.preventDefault(); // Stop default browser actions
+      
       const user = tg.initDataUnsafe?.user;
       const statusDiv = document.getElementById('status-msg');
       
@@ -51,39 +54,47 @@
       const rate = parseFloat(document.getElementById('ad-rate').value);
 
       if (!amount || amount <= 0 || !rate || rate <= 0) {
-        alert("Please enter valid amount and rate.");
+        alert("Please enter a valid amount and rate.");
+        return;
+      }
+
+      if (!user) {
+        alert("User data missing from Telegram context.");
         return;
       }
 
       statusDiv.style.color = "#f1c40f";
-      statusDiv.innerText = "Posting advertisement...";
+      statusDiv.innerText = "Posting ad...";
+
+      // Payload sent to your Python bot chat in background
+      const payloadText = `/create_ad ${user.id} ${adType} ${amount} ${rate}`;
 
       try {
-        const response = await fetch(API_URL, {
+        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            user_id: user ? user.id : 0,
-            ad_type: adType,
-            amount: amount,
-            rate: rate
+            chat_id: user.id,
+            text: payloadText
           })
         });
 
-        const result = await response.json();
+        const resData = await response.json();
 
-        if (result.success) {
+        if (resData.ok) {
           statusDiv.style.color = "#2ecc71";
-          statusDiv.innerText = "✅ " + result.message;
+          statusDiv.innerText = "✅ Ad posted successfully!";
+          
+          // Clear inputs so user can post another ad immediately
           document.getElementById('ad-amount').value = "";
           document.getElementById('ad-rate').value = "";
         } else {
           statusDiv.style.color = "#e74c3c";
-          statusDiv.innerText = "❌ " + result.message;
+          statusDiv.innerText = "❌ Failed to post ad.";
         }
       } catch (err) {
         statusDiv.style.color = "#e74c3c";
-        statusDiv.innerText = "❌ Connection error. Ensure backend is running.";
+        statusDiv.innerText = "❌ Network error. Try again.";
       }
     }
   </script>
