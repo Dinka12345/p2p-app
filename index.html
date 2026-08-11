@@ -335,6 +335,138 @@
             cursor: pointer;
         }
 
+        /* BUY ORDER SCREEN STYLES (from image) */
+        .trade-modal-section {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .trade-modal-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 12px;
+        }
+        .pm-display-box {
+            background-color: #181d23;
+            border-radius: 8px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .pm-sub-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .currency-toggle-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background-color: #181d23;
+            border-radius: 8px;
+            padding: 3px;
+            margin-bottom: 14px;
+        }
+        .currency-tab {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 8px 0;
+            font-size: 13px;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: center;
+        }
+        .currency-tab.active {
+            background-color: var(--accent-green);
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .trade-input-box {
+            position: relative;
+            background-color: #181d23;
+            border: 1px solid #363c4e;
+            border-radius: 8px;
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .trade-input-box.error {
+            border-color: var(--accent-red);
+        }
+        .trade-input-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-size: 16px;
+            width: 80%;
+        }
+        .trade-input-box .suffix {
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .trade-error-msg {
+            color: var(--accent-red);
+            font-size: 11px;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pay-summary-box {
+            background-color: #181d23;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 14px;
+        }
+        .pay-summary-label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .pay-summary-amount {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-yellow);
+        }
+        .pay-summary-amount span {
+            font-size: 13px;
+            font-weight: normal;
+        }
+        .rate-info-text {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 14px 0 16px 0;
+        }
+        .btn-confirm-trade {
+            width: 100%;
+            background-color: #134633;
+            color: #2ee29b;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-confirm-trade.enabled {
+            background-color: var(--accent-green);
+            color: #000000;
+        }
+        .trade-bullets {
+            margin-top: 16px;
+            padding-left: 16px;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
         /* WALLET VIEW STYLES */
         .wallet-container { padding: 16px; }
         .wallet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
@@ -699,6 +831,56 @@
             <div class="note-card">
                 <strong>Note:</strong> You can create a maximum of 1 Buy ad and 1 Sell ad. Multiple ads of the same type are not allowed.
             </div>
+        </div>
+    </div>
+
+    <!-- BUY USDT ORDER MODAL -->
+    <div id="buyOrderModal" class="modal-overlay">
+        <div class="back-nav" onclick="closeBuyOrderModal()">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to Offers</span>
+        </div>
+
+        <div class="trade-modal-section">
+            <div class="trade-modal-title">Payment Methods</div>
+            <div class="pm-display-box" id="tradePaymentMethodName">Telebirr</div>
+            <div class="pm-sub-hint">Payment details will be shared after order confirmation</div>
+        </div>
+
+        <div class="trade-modal-section">
+            <div class="trade-modal-title">Buy USDT</div>
+            
+            <div class="currency-toggle-group">
+                <button id="currTabUSD" class="currency-tab active" onclick="setBuyCurrency('USD')">USD</button>
+                <button id="currTabETB" class="currency-tab" onclick="setBuyCurrency('ETB')">ETB</button>
+            </div>
+
+            <div class="input-group">
+                <div class="input-label" style="margin-bottom: 4px;">Amount</div>
+                <div class="trade-input-box" id="tradeInputBox">
+                    <input type="number" id="tradeInputAmount" value="18" oninput="calculateTrade()">
+                    <span class="suffix" id="tradeInputSuffix">USD</span>
+                </div>
+                <div class="trade-error-msg" id="tradeMinError">
+                    <i class="fa-regular fa-circle-exclamation"></i>
+                    <span id="tradeMinErrorText">Amount must be at least $19.63 USDT</span>
+                </div>
+            </div>
+
+            <div class="pay-summary-box">
+                <div class="pay-summary-label">You will pay</div>
+                <div class="pay-summary-amount" id="tradeCalculatedPay">3384.00 <span>ETB</span></div>
+            </div>
+
+            <div class="rate-info-text" id="tradeRateInfo">Rate: 1 USD = 188.00 ETB</div>
+
+            <button id="tradeSubmitBtn" class="btn-confirm-trade" onclick="confirmBuyTrade()">Buy USDT</button>
+
+            <ul class="trade-bullets">
+                <li>Request will be sent to <span id="tradeSellerUsername" style="color:#fff; font-weight:bold;">Azuz</span></li>
+                <li>They have 5 minutes to accept</li>
+                <li>You'll be notified once accepted</li>
+            </ul>
         </div>
     </div>
 
@@ -1196,6 +1378,16 @@
         let selectedType = 'buy';
         let currentFilter = 'all';
 
+        // Current Active Trade State
+        let currentTrade = {
+            sellerName: 'Azuz',
+            rate: 188.00,
+            minETB: 3690.44,
+            maxETB: 50000,
+            paymentMethod: 'Telebirr',
+            currency: 'USD'
+        };
+
         // Default Market Ads
         const defaultBuyAds = [
             { id: 'def1', username: 'Worldcup2026', type: 'buy', price: '187.00', min: '5000', max: '7526.75', payment: 'Telebirr', stats: '91% | 6 orders' },
@@ -1203,7 +1395,7 @@
         ];
 
         const defaultSellAds = [
-            { id: 'def3', username: 'Ashenafi', type: 'sell', price: '184.10', min: '2000', max: '3000', payment: 'Telebirr', stats: '87.5% | 12 orders' }
+            { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payment: 'Telebirr', stats: '98% | 42 orders' }
         ];
 
         // Storage Helpers
@@ -1273,7 +1465,7 @@
                         </div>
                         ${isMyAd ? 
                             `<button class="action-btn sell-bg" onclick="deleteAd('${ad.id}')">Delete</button>` : 
-                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}')">${btnText}</button>`
+                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${ad.payment || 'Telebirr'}')">${btnText}</button>`
                         }
                     </div>
                     <div class="card-details">
@@ -1384,6 +1576,105 @@
 
         function createNewAd() { document.getElementById('createAdModal').classList.add('active'); }
         function closeCreateAd() { document.getElementById('createAdModal').classList.remove('active'); }
+
+        /* BUY ORDER MODAL LOGIC */
+        function startTrade(traderName, rate, min, max, payment) {
+            currentTrade.sellerName = traderName;
+            currentTrade.rate = parseFloat(rate);
+            currentTrade.minETB = parseFloat(min) || 3690.44;
+            currentTrade.maxETB = parseFloat(max) || 50000;
+            currentTrade.paymentMethod = payment || 'Telebirr';
+            currentTrade.currency = 'USD';
+
+            document.getElementById('tradePaymentMethodName').innerText = currentTrade.paymentMethod;
+            document.getElementById('tradeSellerUsername').innerText = currentTrade.sellerName;
+            document.getElementById('tradeRateInfo').innerText = `Rate: 1 USD = ${currentTrade.rate.toFixed(2)} ETB`;
+            document.getElementById('tradeInputAmount').value = "18";
+
+            setBuyCurrency('USD');
+            document.getElementById('buyOrderModal').classList.add('active');
+        }
+
+        function closeBuyOrderModal() {
+            document.getElementById('buyOrderModal').classList.remove('active');
+        }
+
+        function setBuyCurrency(curr) {
+            currentTrade.currency = curr;
+            const usdBtn = document.getElementById('currTabUSD');
+            const etbBtn = document.getElementById('currTabETB');
+            const suffix = document.getElementById('tradeInputSuffix');
+
+            if (curr === 'USD') {
+                usdBtn.className = 'currency-tab active';
+                etbBtn.className = 'currency-tab';
+                suffix.innerText = 'USD';
+            } else {
+                etbBtn.className = 'currency-tab active';
+                usdBtn.className = 'currency-tab';
+                suffix.innerText = 'ETB';
+            }
+            calculateTrade();
+        }
+
+        function calculateTrade() {
+            const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
+            const rate = currentTrade.rate;
+            const minUSDT = (currentTrade.minETB / rate).toFixed(2);
+            let totalPayETB = 0;
+            let totalUSDT = 0;
+
+            if (currentTrade.currency === 'USD') {
+                totalUSDT = inputVal;
+                totalPayETB = inputVal * rate;
+            } else {
+                totalPayETB = inputVal;
+                totalUSDT = inputVal / rate;
+            }
+
+            document.getElementById('tradeCalculatedPay').innerHTML = `${totalPayETB.toFixed(2)} <span>ETB</span>`;
+
+            const inputBox = document.getElementById('tradeInputBox');
+            const errorBox = document.getElementById('tradeMinError');
+            const errorText = document.getElementById('tradeMinErrorText');
+            const submitBtn = document.getElementById('tradeSubmitBtn');
+
+            if (totalUSDT < minUSDT) {
+                inputBox.classList.add('error');
+                errorBox.style.display = 'flex';
+                errorText.innerText = `Amount must be at least $${minUSDT} USDT`;
+                submitBtn.classList.remove('enabled');
+            } else {
+                inputBox.classList.remove('error');
+                errorBox.style.display = 'none';
+                submitBtn.classList.add('enabled');
+            }
+        }
+
+        function confirmBuyTrade() {
+            const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
+            const rate = currentTrade.rate;
+            const minUSDT = currentTrade.minETB / rate;
+            let totalUSDT = currentTrade.currency === 'USD' ? inputVal : inputVal / rate;
+
+            if (totalUSDT < minUSDT) {
+                alert(`Minimum trade amount is $${minUSDT.toFixed(2)} USDT`);
+                return;
+            }
+
+            const tradeData = {
+                action: "execute_buy_trade",
+                seller: currentTrade.sellerName,
+                rate: currentTrade.rate,
+                amountUSDT: totalUSDT.toFixed(2),
+                amountETB: (totalUSDT * currentTrade.rate).toFixed(2),
+                paymentMethod: currentTrade.paymentMethod
+            };
+
+            tg.sendData(JSON.stringify(tradeData));
+            alert(`Order request sent to ${currentTrade.sellerName}!`);
+            closeBuyOrderModal();
+        }
 
         // Profile Modal Functions
         function openProfileModal() {
@@ -1527,14 +1818,6 @@
         function handleDeposit() { tg.sendData(JSON.stringify({ action: "open_deposit" })); }
         function handleWithdraw() { tg.sendData(JSON.stringify({ action: "open_withdraw" })); }
         function handleHistory() { tg.sendData(JSON.stringify({ action: "open_wallet_history" })); }
-        
-        function startTrade(traderName, rate) {
-            tg.showConfirm(`Initiate order with ${traderName} at ${rate} ETB?`, function(confirmed) {
-                if (confirmed) {
-                    tg.sendData(JSON.stringify({ action: "start_trade", trader: traderName, rate: rate }));
-                }
-            });
-        }
 
         function toggleOnlineStatus() {
             const isChecked = document.getElementById('keepOnlineToggle').checked;
