@@ -65,7 +65,7 @@
         .header { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
         .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
-        .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; }
+        .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; cursor: pointer; }
 
         .toggle-container { display: flex; padding: 0 16px 16px 16px; gap: 10px; }
         .home-toggle-btn { background-color: var(--btn-bg); color: var(--text-muted); border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
@@ -554,6 +554,46 @@
         .pm-acc-info h4 { margin: 0; font-size: 14px; color: #fff; }
         .pm-acc-info p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
         .pm-delete-btn { color: var(--accent-red); cursor: pointer; font-size: 14px; padding: 6px; }
+
+        /* HOW TO USE GUIDE STYLES */
+        .guide-section {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .guide-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--accent-yellow);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .guide-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .guide-list li {
+            position: relative;
+            padding-left: 18px;
+            font-size: 13px;
+            color: #d1d4dc;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        .guide-list li:last-child {
+            margin-bottom: 0;
+        }
+        .guide-list li::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -565,7 +605,7 @@
                 <h1>AllP2P</h1>
                 <p>Trade USDT with local currency</p>
             </div>
-            <div class="info-icon">i</div>
+            <div class="info-icon" onclick="openHowToUseModal()">i</div>
         </div>
 
         <div class="toggle-container">
@@ -874,7 +914,7 @@
                     </div>
                 </div>
 
-                <div class="menu-item" onclick="openMoreOption('how_to_use')">
+                <div class="menu-item" onclick="openHowToUseModal()">
                     <div class="menu-icon-bg"><i class="fa-solid fa-book-open"></i></div>
                     <div class="menu-text">
                         <div class="menu-title">How to Use Guide</div>
@@ -1057,6 +1097,71 @@
                 <button class="pm-btn-cancel" onclick="closePaymentAccountsModal()">Cancel</button>
                 <button class="pm-btn-save" onclick="savePaymentMethod()">Save</button>
             </div>
+        </div>
+    </div>
+
+    <!-- HOW TO USE GUIDE MODAL -->
+    <div id="howToUseModal" class="modal-overlay">
+        <div class="back-nav" onclick="closeHowToUseModal()">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back</span>
+        </div>
+
+        <h1 style="font-size: 22px; margin: 0 0 4px 0;">How to Use</h1>
+        <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted);">Learn how to navigate and trade on AllP2P</p>
+
+        <!-- Section 1 -->
+        <div class="guide-section">
+            <div class="guide-title"><i class="fa-solid fa-bullhorn"></i> 1. Creating Ads</div>
+            <ul class="guide-list">
+                <li>Navigate to the "Ads" tab in the bottom navigation</li>
+                <li>Click the "Create" button to start creating an ad</li>
+                <li>Choose between "Buy" or "Sell" USDT</li>
+                <li>Set your preferred price, trade limits, and payment methods</li>
+                <li>Your ad will appear in the marketplace once published</li>
+            </ul>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="guide-section">
+            <div class="guide-title"><i class="fa-solid fa-cart-shopping"></i> 2. Placing Orders</div>
+            <ul class="guide-list">
+                <li>Browse available buy/sell offers on the "Home" tab</li>
+                <li>Click on an offer to view trader stats and terms</li>
+                <li>Enter the amount you wish to trade and confirm</li>
+                <li>Submit your order request and await advertiser acceptance</li>
+            </ul>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="guide-section">
+            <div class="guide-title"><i class="fa-solid fa-wallet"></i> 3. Managing Wallet</div>
+            <ul class="guide-list">
+                <li>Access your balances under the "Wallet" tab</li>
+                <li>View your total, available, and locked escrow funds</li>
+                <li>Click "Deposit" to top up using Solana or BNB Smart Chain (BEP20)</li>
+                <li>Click "Withdraw" to transfer funds to external wallets</li>
+            </ul>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="guide-section">
+            <div class="guide-title"><i class="fa-solid fa-shield-halved"></i> 4. Safety Tips</div>
+            <ul class="guide-list">
+                <li>Trade with verified users having high reliability scores</li>
+                <li>Always confirm local bank/payment receipts before releasing crypto</li>
+                <li>Rely on the built-in escrow system for secure trade fulfillment</li>
+                <li>Never share private keys, passwords, or recovery codes</li>
+            </ul>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="guide-section">
+            <div class="guide-title"><i class="fa-solid fa-circle-question"></i> 5. Need Help?</div>
+            <ul class="guide-list">
+                <li>Access the Contact Center under the More menu for active support</li>
+                <li>Check for platform updates and tips in official community updates</li>
+            </ul>
         </div>
     </div>
 
@@ -1303,6 +1408,15 @@
 
         function closePaymentAccountsModal() {
             document.getElementById('paymentAccountsModal').classList.remove('active');
+        }
+
+        // How To Use Modal Functions
+        function openHowToUseModal() {
+            document.getElementById('howToUseModal').classList.add('active');
+        }
+
+        function closeHowToUseModal() {
+            document.getElementById('howToUseModal').classList.remove('active');
         }
 
         function renderSavedPaymentMethods() {
