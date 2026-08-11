@@ -2,99 +2,300 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>P2P Mini App</title>
-    <!-- Telegram Web App SDK -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AllP2P Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: var(--tg-theme-bg-color, #ffffff);
-            --text-color: var(--tg-theme-text-color, #000000);
-            --hint-color: var(--tg-theme-hint-color, #999999);
-            --button-color: var(--tg-theme-button-color, #2481cc);
-            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+            --bg-main: #13151b;
+            --bg-card: #1e2329;
+            --text-main: #ffffff;
+            --text-muted: #848e9c;
+            --accent-red: #f04a5d;
+            --accent-yellow: #fbd743;
+            --btn-bg: #2b3139;
         }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
             margin: 0;
+            padding: 0;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            padding-bottom: 70px; /* Space for bottom nav */
+        }
+
+        /* Header Section */
+        .header {
             padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .container {
-            max-width: 480px;
-            margin: 0 auto;
+        .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+        .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; }
+
+        /* Toggle Buy/Sell */
+        .toggle-container {
+            display: flex;
+            padding: 0 16px 16px 16px;
+            gap: 12px;
         }
-        h2 { font-size: 20px; margin-bottom: 8px; }
-        .card {
-            background: rgba(128, 128, 128, 0.1);
-            padding: 12px;
-            border-radius: 12px;
-            margin-bottom: 12px;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin: 6px 0 12px 0;
-            border: 1px solid var(--hint-color);
-            border-radius: 8px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            background-color: var(--button-color);
-            color: var(--button-text-color);
+        .toggle-btn {
+            background-color: var(--btn-bg);
+            color: var(--text-muted);
             border: none;
-            padding: 12px;
+            padding: 8px 24px;
             border-radius: 8px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
         }
+        .toggle-btn.active {
+            background-color: var(--accent-red);
+            color: white;
+        }
+
+        /* Order Cards */
+        .order-list { padding: 0 16px; }
+        .card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar {
+            width: 40px; height: 40px;
+            background-color: var(--accent-yellow);
+            color: black;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            font-weight: bold; font-size: 18px;
+            position: relative;
+        }
+        .online-dot {
+            position: absolute; bottom: 0; right: 0;
+            width: 10px; height: 10px;
+            background-color: #0ecb81;
+            border: 2px solid var(--bg-card);
+            border-radius: 50%;
+        }
+        .user-details h3 { margin: 0; font-size: 15px; }
+        .user-stats { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
+        .user-stats i { color: var(--accent-yellow); font-size: 10px; }
+        
+        .sell-btn {
+            background-color: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .card-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+        .detail-col { display: flex; flex-direction: column; gap: 4px; }
+        .label { color: var(--text-muted); text-transform: uppercase; font-size: 10px; margin-bottom: 4px; }
+        .price-val { font-size: 18px; font-weight: bold; color: white; }
+        .limit-val { font-size: 13px; color: white; font-weight: 500; }
+        
+        .payment-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+        .tag {
+            background-color: var(--btn-bg);
+            color: var(--text-muted);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background-color: var(--bg-main);
+            border-top: 1px solid var(--btn-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            padding-bottom: env(safe-area-inset-bottom, 10px);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 10px;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .nav-item i { font-size: 18px; }
+        .nav-item.active { color: var(--accent-yellow); }
+
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Create P2P Offer</h2>
+
+    <div class="header">
+        <div>
+            <h1>AllP2P</h1>
+            <p>Trade USDT with local currency</p>
+        </div>
+        <div class="info-icon">i</div>
+    </div>
+
+    <div class="toggle-container">
+        <button class="toggle-btn">Buy</button>
+        <button class="toggle-btn active">Sell</button>
+    </div>
+
+    <div class="order-list">
+        <!-- Card 1 -->
         <div class="card">
-            <label for="amount">Amount (USDT):</label>
-            <input type="number" id="amount" placeholder="0.00">
+            <div class="card-header">
+                <div class="user-info">
+                    <div class="avatar">A<div class="online-dot"></div></div>
+                    <div class="user-details">
+                        <h3>Ashenafi Kus...</h3>
+                        <p class="user-stats"><i class="fa-solid fa-star"></i> 87.5% | 12 orders</p>
+                    </div>
+                </div>
+                <button class="sell-btn" onclick="triggerTrade('184.10')">Sell</button>
+            </div>
+            <div class="card-details">
+                <div class="detail-col">
+                    <span class="label">Price</span>
+                    <span class="price-val">184.10 <span style="font-size: 12px;">ETB</span></span>
+                </div>
+                <div class="detail-col">
+                    <span class="label">Limit</span>
+                    <span class="limit-val">2,000.00 -<br>3,000.00 ETB</span>
+                </div>
+                <div class="detail-col" style="align-items: flex-end;">
+                    <span class="label">Payment</span>
+                    <div class="payment-tags">
+                        <span class="tag">CBE Birr</span>
+                        <span class="tag">Telebirr</span>
+                        <span class="tag">+1</span>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <label for="fiatMethod">Payment Method:</label>
-            <select id="fiatMethod">
-                <option value="bank_transfer">Bank Transfer</option>
-                <option value="local_p2p">Local P2P / Mobile Money</option>
-            </select>
+        <!-- Card 2 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="user-info">
+                    <div class="avatar" style="transform: rotate(45deg); font-size: 24px; display: flex; align-items: center; justify-content: center;"><span style="transform: rotate(-45deg); font-size: 14px;"></span><div class="online-dot" style="background: grey; transform: rotate(-45deg);"></div></div>
+                    <div class="user-details">
+                        <h3>Zypher...</h3>
+                        <p class="user-stats"><i class="fa-solid fa-star"></i> 99.5% | 40 orders</p>
+                    </div>
+                </div>
+                <button class="sell-btn">Sell</button>
+            </div>
+            <div class="card-details">
+                <div class="detail-col">
+                    <span class="label">Price</span>
+                    <span class="price-val">184.01 <span style="font-size: 12px;">ETB</span></span>
+                </div>
+                <div class="detail-col">
+                    <span class="label">Limit</span>
+                    <span class="limit-val">5,000.00 -<br>20,000.00 ETB</span>
+                </div>
+                <div class="detail-col" style="align-items: flex-end;">
+                    <span class="label">Payment</span>
+                    <div class="payment-tags">
+                        <span class="tag">CBE</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="card">
+            <div class="card-header">
+                <div class="user-info">
+                    <div class="avatar">B<div class="online-dot"></div></div>
+                    <div class="user-details">
+                        <h3>Binance_2029</h3>
+                        <p class="user-stats"><i class="fa-solid fa-star"></i> 100% | 0 orders</p>
+                    </div>
+                </div>
+                <button class="sell-btn">Sell</button>
+            </div>
+            <div class="card-details">
+                <div class="detail-col">
+                    <span class="label">Price</span>
+                    <span class="price-val">184.00 <span style="font-size: 12px;">ETB</span></span>
+                </div>
+                <div class="detail-col">
+                    <span class="label">Limit</span>
+                    <span class="limit-val">20,000.00 -<br>150,000.00 ETB</span>
+                </div>
+                <div class="detail-col" style="align-items: flex-end;">
+                    <span class="label">Payment</span>
+                    <div class="payment-tags">
+                        <span class="tag">CBE</span>
+                        <span class="tag">Telebirr</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            <button id="submitBtn" onclick="submitOffer()">Publish Offer</button>
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-item">
+            <i class="fa-regular fa-file-lines"></i>
+            <span>Orders</span>
+        </div>
+        <div class="nav-item">
+            <i class="fa-solid fa-bullhorn"></i>
+            <span>Ads</span>
+        </div>
+        <div class="nav-item">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </div>
+        <div class="nav-item">
+            <i class="fa-solid fa-ellipsis"></i>
+            <span>More</span>
         </div>
     </div>
 
     <script>
-        // Initialize Telegram WebApp
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        function submitOffer() {
-            const amount = document.getElementById('amount').value;
-            const method = document.getElementById('fiatMethod').value;
-
-            if (!amount || amount <= 0) {
-                tg.showAlert("Please enter a valid amount.");
-                return;
-            }
-
-            // Data payload to send back to the bot server via WebApp data passing or fetch API
-            const payload = {
-                action: "create_offer",
-                amount: amount,
-                method: method,
-                initData: tg.initData // Essential for verifying user authenticity server-side
-            };
-
-            // Send data back to bot / backend
-            tg.sendData(JSON.stringify(payload));
+        // Example interaction linking UI to the bot
+        function triggerTrade(price) {
+            tg.showConfirm(`Do you want to initiate a sell order at ${price} ETB?`, function(confirmed) {
+                if(confirmed) {
+                    tg.sendData(JSON.stringify({
+                        action: "initiate_trade",
+                        rate: price
+                    }));
+                }
+            });
         }
     </script>
 </body>
