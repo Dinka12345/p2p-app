@@ -145,7 +145,7 @@
         .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 16px; }
         .note-card strong { color: var(--accent-yellow); }
 
-        /* CREATE AD FORM MODAL STYLES */
+        /* MODALS (GENERAL) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -411,182 +411,149 @@
         .menu-title { font-size: 15px; font-weight: bold; color: #ffffff; }
         .menu-sub { font-size: 12px; color: var(--text-muted); }
 
-        /* PROFILE MODAL & FEATURE STYLES */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        /* PROFILE MODAL STYLES */
+        .profile-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+        .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background-color: var(--accent-yellow); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
+        .profile-user-title { font-size: 18px; font-weight: 700; }
+        .profile-username { color: var(--text-muted); font-size: 13px; }
+        .profile-card { background-color: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
+        .profile-card-title { font-size: 15px; font-weight: 600; margin-bottom: 12px; color: #ffffff; }
 
-        .profile-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background-color: var(--accent-yellow);
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 20px;
-        }
-
-        .profile-user-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .profile-username {
-            color: var(--text-muted);
-            font-size: 13px;
-        }
-
-        .profile-card {
-            background-color: var(--bg-card);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 14px;
-        }
-
-        .profile-card-title {
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: #ffffff;
-        }
-
-        /* Trading Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 12px 4px;
-            text-align: center;
-        }
-
-        .stat-val {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        .stat-box { background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 12px 4px; text-align: center; }
+        .stat-val { font-size: 18px; font-weight: bold; }
         .stat-val.green { color: var(--accent-green); }
+        .stat-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
 
-        .stat-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-
-        /* Achievements Badges */
-        .badge-container {
-            display: flex;
-            gap: 8px;
-        }
-
-        .badge {
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
+        .badge-container { display: flex; gap: 8px; }
+        .badge { font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; }
         .badge-green { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); }
         .badge-blue { background: rgba(41, 182, 246, 0.15); color: var(--accent-blue); }
 
-        /* Referral Program Card */
-        .referral-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
+        .referral-card { display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+        .referral-left { display: flex; align-items: center; gap: 12px; }
+        .referral-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(251, 215, 67, 0.15); display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--accent-yellow); }
+        .referral-title { font-size: 14px; font-weight: 600; }
+        .referral-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-        .referral-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .referral-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            background: rgba(251, 215, 67, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            color: var(--accent-yellow);
-        }
-
-        .referral-title {
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .referral-sub {
-            font-size: 11px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        /* Info List Rows */
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; font-size: 13px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); }
+        .info-row:last-child { border-bottom: none; }
         .info-label { color: var(--text-muted); }
+        .info-val { display: flex; align-items: center; gap: 6px; font-weight: 500; color: #ffffff; }
+        .edit-icon { color: var(--text-muted); font-size: 12px; cursor: pointer; }
+        .warning-text { color: var(--accent-yellow); font-size: 11px; text-align: right; margin-top: 2px; }
+        .security-btn { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 12px; font-size: 13px; cursor: pointer; }
 
-        .info-val {
+        /* ADD PAYMENT METHOD SCREEN STYLES */
+        .pm-modal-card {
+            background-color: #1a1e26;
+            border-radius: 16px;
+            padding: 20px;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        .pm-modal-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 6px;
-            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .pm-modal-title {
+            font-size: 18px;
+            font-weight: bold;
             color: #ffffff;
         }
 
-        .edit-icon {
+        .pm-close-btn {
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 18px;
             cursor: pointer;
         }
 
-        .warning-text {
-            color: var(--accent-yellow);
-            font-size: 11px;
-            text-align: right;
-            margin-top: 2px;
+        .pm-field {
+            margin-bottom: 16px;
         }
 
-        /* Security Button */
-        .security-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 12px;
+        .pm-label {
             font-size: 13px;
-            cursor: pointer;
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 500;
         }
+
+        .pm-label span { color: var(--accent-yellow); }
+
+        .pm-select, .pm-input {
+            width: 100%;
+            background-color: #0d0f12;
+            border: 1px solid #232730;
+            border-radius: 8px;
+            padding: 14px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .pm-input-disabled {
+            background-color: #12151c;
+            color: #d1d4dc;
+            border-color: #1d212a;
+        }
+
+        .pm-subtext {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .pm-btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .pm-btn-cancel {
+            background-color: #2b313a;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .pm-btn-save {
+            background-color: var(--accent-yellow);
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        /* Saved Payment Accounts List */
+        .pm-account-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pm-acc-info h4 { margin: 0; font-size: 14px; color: #fff; }
+        .pm-acc-info p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
+        .pm-delete-btn { color: var(--accent-red); cursor: pointer; font-size: 14px; padding: 6px; }
     </style>
 </head>
 <body>
@@ -607,7 +574,6 @@
         </div>
 
         <div class="order-list">
-            <!-- Dynamic list container -->
             <div id="buyMarketList"></div>
             <div id="sellMarketList" style="display: none;"></div>
         </div>
@@ -681,7 +647,6 @@
                 <button class="filter-btn accounts-btn" onclick="filterAds('accounts', this)">Accounts</button>
             </div>
 
-            <!-- Container where created ads will render -->
             <div id="myAdsList"></div>
 
             <div id="myAdsEmptyState" class="empty-state">
@@ -707,7 +672,6 @@
         <h1 style="font-size: 20px; margin: 0 0 16px 0;">Create New Ad</h1>
 
         <div class="form-card">
-            <!-- Ad Type -->
             <div>
                 <div class="form-section-title">Ad Type</div>
                 <div class="ad-type-grid">
@@ -724,7 +688,6 @@
                 </div>
             </div>
 
-            <!-- Pricing -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:0;">Pricing</div>
                 <div class="input-label">Price per USDT (ETB)</div>
@@ -735,7 +698,6 @@
                 <div class="input-hint">Price range from 89.12 to 267.38 ETB</div>
             </div>
 
-            <!-- Total Amount -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:0;">Total Amount</div>
                 <div class="input-label">Amount (USDT)</div>
@@ -744,7 +706,6 @@
                 </div>
             </div>
 
-            <!-- Order Limits -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:0;">Order Limits</div>
                 <div class="limits-grid">
@@ -760,27 +721,24 @@
                 <div class="input-hint">Limits must be between 200 and 5,000,000 ETB</div>
             </div>
 
-            <!-- Payment Methods -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:4px;">Payment Methods</div>
                 <div class="payment-options">
                     <div class="payment-card-select selected" onclick="togglePaymentSelect(this)">
                         <div class="payment-card-info">
                             <span class="payment-card-title">Telebirr</span>
-                            <span class="payment-card-sub">Temesigen Akililu lema</span>
+                            <span class="payment-card-sub" id="adPaymentUserName">Temesigen Akililu lema</span>
                         </div>
                         <div class="payment-card-check"><i class="fa-solid fa-check"></i></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Terms (Optional) -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:0;">Terms (Optional)</div>
                 <textarea id="adTerms" class="custom-input" style="height: 70px; resize: none;" placeholder="Enter any special terms..."></textarea>
             </div>
 
-            <!-- Actions -->
             <div class="form-actions">
                 <button class="btn-cancel" onclick="closeCreateAd()">Cancel</button>
                 <button class="btn-submit" onclick="submitNewAd()">Create Ad</button>
@@ -876,7 +834,7 @@
                     </div>
                 </div>
 
-                <div class="menu-item" onclick="openMoreOption('payment_accounts')">
+                <div class="menu-item" onclick="openPaymentAccountsModal()">
                     <div class="menu-icon-bg"><i class="fa-regular fa-credit-card"></i></div>
                     <div class="menu-text">
                         <div class="menu-title">Payment Accounts</div>
@@ -934,16 +892,14 @@
             <span>Back to More</span>
         </div>
 
-        <!-- User Header -->
         <div class="profile-header">
             <div class="profile-avatar" id="profAvatar">U</div>
             <div>
-                <div class="profile-user-title" id="profFullName">User Name</div>
+                <div class="profile-user-title" id="profFullName">Temesigen Akililu lema</div>
                 <div class="profile-username" id="profUsername">@username</div>
             </div>
         </div>
 
-        <!-- 1. Trading Stats -->
         <div class="profile-card">
             <div class="profile-card-title">Trading Stats</div>
             <div class="stats-grid">
@@ -962,7 +918,6 @@
             </div>
         </div>
 
-        <!-- 2. Achievements -->
         <div class="profile-card">
             <div class="profile-card-title">Achievements</div>
             <div class="badge-container">
@@ -971,7 +926,6 @@
             </div>
         </div>
 
-        <!-- 3. Referral Program -->
         <div class="profile-card referral-card" onclick="openMoreOption('referral_program')">
             <div class="referral-left">
                 <div class="referral-icon"><i class="fa-solid fa-gift"></i></div>
@@ -983,12 +937,11 @@
             <div style="color: var(--text-muted);"><i class="fa-solid fa-chevron-right"></i></div>
         </div>
 
-        <!-- 4. Personal Info -->
         <div class="profile-card">
             <div class="profile-card-title">Personal Info</div>
             <div class="info-row">
                 <span class="info-label">Full Name</span>
-                <span class="info-val" id="profInfoName">User <i class="fa-solid fa-pen edit-icon" onclick="editProfileField('Full Name')"></i></span>
+                <span class="info-val" id="profInfoName">Temesigen Akililu lema <i class="fa-solid fa-pen edit-icon" onclick="editProfileField('Full Name')"></i></span>
             </div>
             <div class="info-row">
                 <span class="info-label">Nickname</span>
@@ -1011,7 +964,6 @@
             </div>
         </div>
 
-        <!-- 5. Account Info -->
         <div class="profile-card">
             <div class="profile-card-title">Account Info</div>
             <div class="info-row">
@@ -1040,11 +992,70 @@
             </div>
         </div>
 
-        <!-- 6. Security -->
         <div class="profile-card">
             <div class="profile-card-title">Security</div>
             <div class="security-btn" onclick="openMoreOption('security')">
                 <i class="fa-solid fa-lock" style="color: var(--accent-red);"></i> Change Secret Code (Password)
+            </div>
+        </div>
+    </div>
+
+    <!-- PAYMENT ACCOUNTS MODAL -->
+    <div id="paymentAccountsModal" class="modal-overlay">
+        <div class="back-nav" onclick="closePaymentAccountsModal()">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Back to More</span>
+        </div>
+
+        <h1 style="font-size: 22px; margin: 0 0 4px 0;">Payment Accounts</h1>
+        <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted);">Manage your payment methods</p>
+
+        <!-- Container for list of added accounts -->
+        <div id="savedPaymentAccountsList"></div>
+
+        <!-- Add Payment Method Form Card -->
+        <div class="pm-modal-card">
+            <div class="pm-modal-header">
+                <div class="pm-modal-title">Add Payment Method</div>
+                <div class="pm-close-btn" onclick="closePaymentAccountsModal()"><i class="fa-solid fa-xmark"></i></div>
+            </div>
+
+            <!-- Provider -->
+            <div class="pm-field">
+                <label class="pm-label">Provider <span>*</span></label>
+                <select id="pmProvider" class="pm-select">
+                    <option value="" disabled selected>Select a provider</option>
+                    <option value="Telebirr">Telebirr</option>
+                    <option value="CBE Birr">CBE Birr</option>
+                    <option value="Commercial Bank of Ethiopia (CBE)">Commercial Bank of Ethiopia (CBE)</option>
+                    <option value="BOA (Bank of Abyssinia)">BOA (Bank of Abyssinia)</option>
+                    <option value="Awash Bank">Awash Bank</option>
+                </select>
+            </div>
+
+            <!-- Account Name -->
+            <div class="pm-field">
+                <label class="pm-label">Account Name <span>*</span></label>
+                <input type="text" id="pmAccountName" class="pm-input pm-input-disabled" value="Temesigen Akililu lema" readonly>
+                <div class="pm-subtext">Uses your verified full name (cannot be changed)</div>
+            </div>
+
+            <!-- Account Number (Optional) -->
+            <div class="pm-field">
+                <label class="pm-label">Account Number (Optional)</label>
+                <input type="text" id="pmAccountNumber" class="pm-input" placeholder="Account number">
+            </div>
+
+            <!-- Phone Number (Optional) -->
+            <div class="pm-field">
+                <label class="pm-label">Phone Number (Optional)</label>
+                <input type="tel" id="pmPhoneNumber" class="pm-input" placeholder="Phone number">
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="pm-btn-row">
+                <button class="pm-btn-cancel" onclick="closePaymentAccountsModal()">Cancel</button>
+                <button class="pm-btn-save" onclick="savePaymentMethod()">Save</button>
             </div>
         </div>
     </div>
@@ -1090,13 +1101,21 @@
             { id: 'def3', username: 'Ashenafi', type: 'sell', price: '184.10', min: '2000', max: '3000', payment: 'Telebirr', stats: '87.5% | 12 orders' }
         ];
 
-        // Storage Helper
+        // Storage Helpers
         function getStoredAds() {
             return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]');
         }
 
         function saveStoredAds(ads) {
             localStorage.setItem('allp2p_user_ads', JSON.stringify(ads));
+        }
+
+        function getStoredPaymentMethods() {
+            return JSON.parse(localStorage.getItem('allp2p_payment_methods') || '[]');
+        }
+
+        function saveStoredPaymentMethods(methods) {
+            localStorage.setItem('allp2p_payment_methods', JSON.stringify(methods));
         }
 
         // Render Functions
@@ -1198,7 +1217,6 @@
             userAds.push(newAd);
             saveStoredAds(userAds);
 
-            // Send payload to Telegram WebApp Backend
             tg.sendData(JSON.stringify({ action: "submit_ad", ad: newAd }));
 
             closeCreateAd();
@@ -1264,14 +1282,7 @@
 
         // Profile Modal Functions
         function openProfileModal() {
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                const user = tg.initDataUnsafe.user;
-                const name = (user.first_name || '') + ' ' + (user.last_name || '');
-                document.getElementById('profFullName').innerText = name.trim() || 'User';
-                document.getElementById('profUsername').innerText = user.username ? '@' + user.username : '@user';
-                document.getElementById('profAvatar').innerText = (user.first_name || 'U').charAt(0).toUpperCase();
-                document.getElementById('profInfoName').innerHTML = `${name.trim() || 'User'} <i class="fa-solid fa-pen edit-icon" onclick="editProfileField('Full Name')"></i>`;
-            }
+            populateUserInfo();
             document.getElementById('profileModal').classList.add('active');
         }
 
@@ -1281,6 +1292,94 @@
 
         function editProfileField(field) {
             tg.sendData(JSON.stringify({ action: "edit_profile_field", field: field }));
+        }
+
+        // Payment Accounts Modal Functions
+        function openPaymentAccountsModal() {
+            populateUserInfo();
+            renderSavedPaymentMethods();
+            document.getElementById('paymentAccountsModal').classList.add('active');
+        }
+
+        function closePaymentAccountsModal() {
+            document.getElementById('paymentAccountsModal').classList.remove('active');
+        }
+
+        function renderSavedPaymentMethods() {
+            const listContainer = document.getElementById('savedPaymentAccountsList');
+            const methods = getStoredPaymentMethods();
+
+            if (methods.length === 0) {
+                listContainer.innerHTML = '';
+                return;
+            }
+
+            listContainer.innerHTML = methods.map(pm => `
+                <div class="pm-account-card">
+                    <div class="pm-acc-info">
+                        <h4>${pm.provider}</h4>
+                        <p>${pm.accountName} ${pm.accountNumber ? '• ' + pm.accountNumber : ''} ${pm.phoneNumber ? '• ' + pm.phoneNumber : ''}</p>
+                    </div>
+                    <div class="pm-delete-btn" onclick="deletePaymentMethod('${pm.id}')"><i class="fa-solid fa-trash-can"></i></div>
+                </div>
+            `).join('');
+        }
+
+        function savePaymentMethod() {
+            const provider = document.getElementById('pmProvider').value;
+            const accountName = document.getElementById('pmAccountName').value;
+            const accountNumber = document.getElementById('pmAccountNumber').value;
+            const phoneNumber = document.getElementById('pmPhoneNumber').value;
+
+            if (!provider) {
+                alert('Please select a provider.');
+                return;
+            }
+
+            const newPaymentMethod = {
+                id: 'pm_' + Date.now(),
+                provider: provider,
+                accountName: accountName,
+                accountNumber: accountNumber,
+                phoneNumber: phoneNumber
+            };
+
+            const methods = getStoredPaymentMethods();
+            methods.push(newPaymentMethod);
+            saveStoredPaymentMethods(methods);
+
+            tg.sendData(JSON.stringify({ action: "add_payment_method", method: newPaymentMethod }));
+
+            // Reset inputs
+            document.getElementById('pmProvider').value = '';
+            document.getElementById('pmAccountNumber').value = '';
+            document.getElementById('pmPhoneNumber').value = '';
+
+            renderSavedPaymentMethods();
+            alert('Payment method saved successfully!');
+        }
+
+        function deletePaymentMethod(id) {
+            let methods = getStoredPaymentMethods();
+            methods = methods.filter(m => m.id !== id);
+            saveStoredPaymentMethods(methods);
+            renderSavedPaymentMethods();
+        }
+
+        function populateUserInfo() {
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                const user = tg.initDataUnsafe.user;
+                const name = (user.first_name || '') + ' ' + (user.last_name || '');
+                const formattedName = name.trim() || 'Temesigen Akililu lema';
+                
+                document.getElementById('profFullName').innerText = formattedName;
+                document.getElementById('profUsername').innerText = user.username ? '@' + user.username : '@username';
+                document.getElementById('profAvatar').innerText = (user.first_name || 'T').charAt(0).toUpperCase();
+                document.getElementById('profInfoName').innerHTML = `${formattedName} <i class="fa-solid fa-pen edit-icon" onclick="editProfileField('Full Name')"></i>`;
+                
+                document.getElementById('pmAccountName').value = formattedName;
+                document.getElementById('adPaymentUserName').innerText = formattedName;
+            }
         }
 
         function selectAdType(type) {
@@ -1328,10 +1427,10 @@
             tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
         }
 
-        // Initialize display on load
         window.onload = function() {
             renderHomeAds();
             renderMyAds();
+            populateUserInfo();
         };
     </script>
 </body>
