@@ -72,7 +72,7 @@
     tg.expand();
 
     const BOT_TOKEN = "8214244948:AAH-SqF_uRFVy8PV_gRBbcoUYq2XxYBxXJA";
-    const ADMIN_ID = 8216936710; // <-- REPLACE WITH YOUR NUMERIC TELEGRAM ID
+    const ADMIN_ID = 123456789; // <-- REPLACE WITH YOUR NUMERIC TELEGRAM ID
 
     const user = tg.initDataUnsafe?.user;
     if (user) {
@@ -96,23 +96,35 @@
         const userId = user ? user.id : "Unknown";
         const userName = user ? (user.username || user.first_name) : "Unknown";
 
-        // Upload Front Photo to Admin
+        // 1. Upload Front Photo
         const frontData = new FormData();
         frontData.append("chat_id", ADMIN_ID);
         frontData.append("photo", frontFile);
         frontData.append("caption", `🪪 FRONT ID\nUser: ${userName}\nID: ${userId}`);
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: frontData });
 
-        // Upload Back Photo to Admin
+        // 2. Prepare Inline Buttons for Admin Approval
+        const replyMarkup = JSON.stringify({
+          inline_keyboard: [
+            [
+              { text: "✅ Approve User", callback_data: `approve_${userId}` },
+              { text: "❌ Reject User", callback_data: `reject_${userId}` }
+            ]
+          ]
+        });
+
+        // 3. Upload Back Photo WITH Inline Buttons attached
         const backData = new FormData();
         backData.append("chat_id", ADMIN_ID);
         backData.append("photo", backFile);
-        backData.append("caption", `🪪 BACK ID\nUser: ${userName}\nID: ${userId}`);
+        backData.append("caption", `🪪 BACK ID\nUser: ${userName}\nID: ${userId}\n\nReview registration request:`);
+        backData.append("reply_markup", replyMarkup);
+        
         await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: backData });
 
-        statusDiv.innerText = "Photos sent successfully!";
+        statusDiv.innerText = "Submitted! Pending Admin Approval.";
 
-        // Notify python backend
+        // 4. Notify Python backend to update user state to PENDING
         tg.sendData(JSON.stringify({ action: "kyc_submitted" }));
         tg.close();
       } catch (err) {
