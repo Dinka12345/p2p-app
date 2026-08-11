@@ -1,160 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P2P Trading Hub</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 15px; background: #18222d; color: #fff; margin: 0; }
-    .card { background: #222e3c; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-    input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334455; background: #10171e; color: white; box-sizing: border-box; }
-    button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; background: #2481cc; color: white; }
-    .btn-trade { background: #2ecc71; color: white; padding: 8px; margin-top: 5px; }
-    .ad-item { background: #10171e; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #2481cc; }
-    .ad-item.BUY { border-left-color: #e74c3c; }
-    .ad-item.SELL { border-left-color: #2ecc71; }
-    .status-box { margin-top: 10px; font-weight: bold; text-align: center; }
-    .badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 0.8em; font-weight: bold; }
-    .badge-buy { background: #e74c3c; color: white; }
-    .badge-sell { background: #2ecc71; color: white; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>P2P Mini App</title>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg-color: var(--tg-theme-bg-color, #ffffff);
+            --text-color: var(--tg-theme-text-color, #000000);
+            --hint-color: var(--tg-theme-hint-color, #999999);
+            --button-color: var(--tg-theme-button-color, #2481cc);
+            --button-text-color: var(--tg-theme-button-text-color, #ffffff);
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 16px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        h2 { font-size: 20px; margin-bottom: 8px; }
+        .card {
+            background: rgba(128, 128, 128, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 6px 0 12px 0;
+            border: 1px solid var(--hint-color);
+            border-radius: 8px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            background-color: var(--button-color);
+            color: var(--button-text-color);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
+    <div class="container">
+        <h2>Create P2P Offer</h2>
+        <div class="card">
+            <label for="amount">Amount (USDT):</label>
+            <input type="number" id="amount" placeholder="0.00">
 
-  <h3>P2P Exchange Desk</h3>
+            <label for="fiatMethod">Payment Method:</label>
+            <select id="fiatMethod">
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="local_p2p">Local P2P / Mobile Money</option>
+            </select>
 
-  <!-- LIVE MARKET BOARD -->
-  <div class="card">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-      <h4 style="margin: 0;">📊 Active P2P Offers</h4>
-      <button onclick="fetchActiveAds()" style="width: auto; padding: 5px 10px; margin: 0; font-size: 0.8em;">🔄 Refresh</button>
+            <button id="submitBtn" onclick="submitOffer()">Publish Offer</button>
+        </div>
     </div>
-    <div id="market-list">Loading live offers...</div>
-  </div>
 
-  <!-- POST NEW AD CARD -->
-  <div class="card">
-    <h4>📢 Post Your Ad</h4>
-    
-    <label for="ad-type">Type:</label>
-    <select id="ad-type">
-      <option value="BUY">BUY USDT</option>
-      <option value="SELL">SELL USDT</option>
-    </select>
+    <script>
+        // Initialize Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
 
-    <label for="ad-amount">Amount (USDT):</label>
-    <input type="number" id="ad-amount" placeholder="e.g. 100">
+        function submitOffer() {
+            const amount = document.getElementById('amount').value;
+            const method = document.getElementById('fiatMethod').value;
 
-    <label for="ad-rate">Rate (ETB):</label>
-    <input type="number" id="ad-rate" placeholder="e.g. 118.5">
+            if (!amount || amount <= 0) {
+                tg.showAlert("Please enter a valid amount.");
+                return;
+            }
 
-    <button type="button" onclick="postAd(event)">Post Advertisement</button>
-    <div id="status-msg" class="status-box"></div>
-  </div>
+            // Data payload to send back to the bot server via WebApp data passing or fetch API
+            const payload = {
+                action: "create_offer",
+                amount: amount,
+                method: method,
+                initData: tg.initData // Essential for verifying user authenticity server-side
+            };
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    const BOT_TOKEN = "8214244948:AAH-SqF_uRFVy8PV_gRBbcoUYq2XxYBxXJA";
-    // Change localhost to your host IP or tunnel URL if hosting backend remotely
-    const API_URL = "http://localhost:8080/api/get_ads";
-
-    async function fetchActiveAds() {
-      const container = document.getElementById('market-list');
-      container.innerHTML = "Refreshing market...";
-
-      try {
-        const response = await fetch(API_URL);
-        const data = await response.json();
-
-        if (data.success && data.ads.length > 0) {
-          container.innerHTML = "";
-          data.ads.forEach(ad => {
-            const badgeClass = ad.ad_type === "BUY" ? "badge-buy" : "badge-sell";
-            const adHtml = `
-              <div class="ad-item ${ad.ad_type}">
-                <div>
-                  <span class="badge ${badgeClass}">${ad.ad_type} USDT</span>
-                  <strong>${ad.amount} USDT</strong> @ <code>${ad.rate} ETB</code>
-                </div>
-                <div style="font-size: 0.85em; color: #8fa1b2; margin-top: 4px;">Seller/Trader: @${ad.username}</div>
-                <button class="btn-trade" onclick="initiateTrade(${ad.ad_id}, '${ad.username}')">Trade Now</button>
-              </div>
-            `;
-            container.innerHTML += adHtml;
-          });
-        } else {
-          container.innerHTML = "<p style='color: #8fa1b2; text-align: center;'>No active offers available right now.</p>";
+            // Send data back to bot / backend
+            tg.sendData(JSON.stringify(payload));
         }
-      } catch (err) {
-        container.innerHTML = "<p style='color: #e74c3c; text-align: center;'>Unable to load active offers. Ensure backend is running.</p>";
-      }
-    }
-
-    async function postAd(e) {
-      if (e) e.preventDefault();
-      
-      const user = tg.initDataUnsafe?.user;
-      const statusDiv = document.getElementById('status-msg');
-      
-      const adType = document.getElementById('ad-type').value;
-      const amount = parseFloat(document.getElementById('ad-amount').value);
-      const rate = parseFloat(document.getElementById('ad-rate').value);
-
-      if (!amount || amount <= 0 || !rate || rate <= 0) {
-        alert("Please enter valid amount and rate.");
-        return;
-      }
-
-      if (!user) {
-        alert("User context missing.");
-        return;
-      }
-
-      statusDiv.style.color = "#f1c40f";
-      statusDiv.innerText = "Posting ad...";
-
-      const payloadText = `/create_ad ${user.id} ${adType} ${amount} ${rate}`;
-
-      try {
-        const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            chat_id: user.id,
-            text: payloadText
-          })
-        });
-
-        const resData = await response.json();
-
-        if (resData.ok) {
-          statusDiv.style.color = "#2ecc71";
-          statusDiv.innerText = "✅ Ad posted and live on market!";
-          document.getElementById('ad-amount').value = "";
-          document.getElementById('ad-rate').value = "";
-          
-          // Instantly refresh the active offers list
-          setTimeout(fetchActiveAds, 1000);
-        } else {
-          statusDiv.style.color = "#e74c3c";
-          statusDiv.innerText = "❌ Failed to post ad.";
-        }
-      } catch (err) {
-        statusDiv.style.color = "#e74c3c";
-        statusDiv.innerText = "❌ Network error.";
-      }
-    }
-
-    function initiateTrade(adId, username) {
-      alert(`Connecting you to trader @${username} for Ad #${adId}...`);
-      tg.close();
-    }
-
-    // Auto-fetch offers on startup
-    fetchActiveAds();
-  </script>
+    </script>
 </body>
 </html>
