@@ -10,49 +10,27 @@
     .card { background: #222e3c; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
     input, select { width: 100%; padding: 10px; margin: 8px 0; border-radius: 6px; border: 1px solid #334455; background: #10171e; color: white; box-sizing: border-box; }
     button { width: 100%; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-    .btn-kyc { background: #f39c12; color: white; }
     .btn-deposit { background: #2baf60; color: white; }
     .btn-withdraw { background: #e53935; color: white; }
     .btn-ad { background: #2481cc; color: white; }
     .user-info { font-size: 0.85em; color: #8fa1b2; margin-bottom: 8px; }
     .grid { display: flex; gap: 10px; }
-    #status-msg { margin-top: 8px; font-weight: bold; color: #f1c40f; text-align: center; }
   </style>
 </head>
 <body>
 
-  <h3>P2P Trading Hub</h3>
+  <h3>P2P Exchange Desk</h3>
 
-  <!-- 1. REGISTRATION & ID UPLOAD -->
+  <!-- USER INFO HEADER -->
   <div class="card">
-    <div class="user-info">User: <span id="user-name">Loading...</span> | ID: <span id="user-id">--</span></div>
-    <h4>🪪 ID Registration</h4>
-    
-    <label>Front Photo of ID:</label>
-    <input type="file" id="front-id" accept="image/*">
-
-    <label>Back Photo of ID:</label>
-    <input type="file" id="back-id" accept="image/*">
-
-    <button class="btn-kyc" onclick="submitKYC()">Submit ID Photos for Approval</button>
-    <div id="status-msg"></div>
+    <div class="user-info">Account: <span id="user-name">Loading...</span> | ID: <span id="user-id">--</span></div>
+    <div style="color: #2baf60; font-size: 0.9em; font-weight: bold;">🟢 Identity Verified</div>
   </div>
 
-  <!-- 2. DEPOSIT & WITHDRAWAL -->
+  <!-- POST ADS CARD -->
   <div class="card">
-    <h4>Deposit & Withdrawal</h4>
-    <label for="trans-amount">Amount (ETB):</label>
-    <input type="number" id="trans-amount" placeholder="Enter amount">
-    <div class="grid">
-      <button class="btn-deposit" onclick="submitTransaction('deposit')">Deposit</button>
-      <button class="btn-withdraw" onclick="submitTransaction('withdraw')">Withdraw</button>
-    </div>
-  </div>
-
-  <!-- 3. POST ADS -->
-  <div class="card">
-    <h4>Post P2P Ad</h4>
-    <label for="ad-type">Type:</label>
+    <h4>📢 Post Trade Ad</h4>
+    <label for="ad-type">Trade Type:</label>
     <select id="ad-type">
       <option value="BUY">BUY USDT</option>
       <option value="SELL">SELL USDT</option>
@@ -61,18 +39,26 @@
     <label for="ad-amount">Amount (USDT):</label>
     <input type="number" id="ad-amount" placeholder="e.g. 100">
 
-    <label for="ad-rate">Rate (ETB):</label>
+    <label for="ad-rate">Rate per USDT (ETB):</label>
     <input type="number" id="ad-rate" placeholder="e.g. 118.5">
 
-    <button class="btn-ad" onclick="postAd()">Post Trade Ad</button>
+    <button class="btn-ad" onclick="postAd()">Post Advertisement</button>
+  </div>
+
+  <!-- BALANCE TRANSACTIONS CARD -->
+  <div class="card">
+    <h4>💳 Deposit / Withdraw</h4>
+    <label for="trans-amount">Amount (ETB):</label>
+    <input type="number" id="trans-amount" placeholder="Enter ETB amount">
+    <div class="grid">
+      <button class="btn-deposit" onclick="submitTransaction('deposit')">Deposit</button>
+      <button class="btn-withdraw" onclick="submitTransaction('withdraw')">Withdraw</button>
+    </div>
   </div>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.expand();
-
-    const BOT_TOKEN = "8214244948:AAH-SqF_uRFVy8PV_gRBbcoUYq2XxYBxXJA";
-    const ADMIN_ID = 8216936710; // <-- REPLACE WITH YOUR NUMERIC TELEGRAM ID
 
     const user = tg.initDataUnsafe?.user;
     if (user) {
@@ -80,75 +66,38 @@
       document.getElementById('user-id').innerText = user.id;
     }
 
-    async function submitKYC() {
-      const frontFile = document.getElementById('front-id').files[0];
-      const backFile = document.getElementById('back-id').files[0];
-      const statusDiv = document.getElementById('status-msg');
-
-      if (!frontFile || !backFile) {
-        alert("Please select BOTH Front and Back photos of your ID.");
-        return;
-      }
-
-      statusDiv.innerText = "Uploading photos to Admin... Please wait.";
-
-      try {
-        const userId = user ? user.id : "Unknown";
-        const userName = user ? (user.username || user.first_name) : "Unknown";
-
-        // 1. Upload Front Photo
-        const frontData = new FormData();
-        frontData.append("chat_id", ADMIN_ID);
-        frontData.append("photo", frontFile);
-        frontData.append("caption", `🪪 FRONT ID\nUser: ${userName}\nID: ${userId}`);
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: frontData });
-
-        // 2. Prepare Inline Buttons for Admin Approval
-        const replyMarkup = JSON.stringify({
-          inline_keyboard: [
-            [
-              { text: "✅ Approve User", callback_data: `approve_${userId}` },
-              { text: "❌ Reject User", callback_data: `reject_${userId}` }
-            ]
-          ]
-        });
-
-        // 3. Upload Back Photo WITH Inline Buttons attached
-        const backData = new FormData();
-        backData.append("chat_id", ADMIN_ID);
-        backData.append("photo", backFile);
-        backData.append("caption", `🪪 BACK ID\nUser: ${userName}\nID: ${userId}\n\nReview registration request:`);
-        backData.append("reply_markup", replyMarkup);
-        
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: "POST", body: backData });
-
-        statusDiv.innerText = "Submitted! Pending Admin Approval.";
-
-        // 4. Notify Python backend to update user state to PENDING
-        tg.sendData(JSON.stringify({ action: "kyc_submitted" }));
-        tg.close();
-      } catch (err) {
-        alert("Upload failed. Ensure ADMIN_ID is correct and try again.");
-        statusDiv.innerText = "";
-      }
-    }
-
-    function submitTransaction(actionType) {
-      const amount = parseFloat(document.getElementById('trans-amount').value);
-      if (!amount || amount <= 0) return alert("Enter a valid amount.");
-
-      tg.sendData(JSON.stringify({ action: actionType, amount: amount }));
-      tg.close();
-    }
-
     function postAd() {
       const adType = document.getElementById('ad-type').value;
       const amount = parseFloat(document.getElementById('ad-amount').value);
       const rate = parseFloat(document.getElementById('ad-rate').value);
 
-      if (!amount || !rate) return alert("Fill in valid amount and rate.");
+      if (!amount || amount <= 0 || !rate || rate <= 0) {
+        alert("Please enter a valid amount and rate.");
+        return;
+      }
 
-      tg.sendData(JSON.stringify({ action: "create_ad", ad_type: adType, amount: amount, rate: rate }));
+      tg.sendData(JSON.stringify({
+        action: "create_ad",
+        ad_type: adType,
+        amount: amount,
+        rate: rate
+      }));
+
+      tg.close();
+    }
+
+    function submitTransaction(actionType) {
+      const amount = parseFloat(document.getElementById('trans-amount').value);
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      tg.sendData(JSON.stringify({
+        action: actionType,
+        amount: amount
+      }));
+
       tg.close();
     }
   </script>
