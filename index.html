@@ -16,7 +16,10 @@
             --accent-yellow: #fbd743;
             --accent-green: #0ecb81;
             --accent-red: #f04a5d;
+            --accent-purple: #8a2be2;
             --btn-bg: #2b3139;
+            --warning-border: #8d6e16;
+            --warning-bg: #262115;
         }
 
         body {
@@ -66,21 +69,8 @@
         .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
         .info-icon { color: var(--text-muted); border: 1px solid var(--text-muted); border-radius: 50%; width: 20px; height: 20px; display: flex; justify-content: center; align-items: center; font-size: 12px; }
 
-        .toggle-container {
-            display: flex;
-            padding: 0 16px 16px 16px;
-            gap: 10px;
-        }
-        .home-toggle-btn {
-            background-color: var(--btn-bg);
-            color: var(--text-muted);
-            border: none;
-            padding: 8px 24px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .toggle-container { display: flex; padding: 0 16px 16px 16px; gap: 10px; }
+        .home-toggle-btn { background-color: var(--btn-bg); color: var(--text-muted); border: none; padding: 8px 24px; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; }
         .home-toggle-btn.active-buy { background-color: var(--accent-green); color: white; }
         .home-toggle-btn.active-sell { background-color: var(--accent-red); color: white; }
 
@@ -156,6 +146,99 @@
 
         .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
         .note-card strong { color: var(--accent-yellow); }
+
+        /* WALLET VIEW STYLES (Matches your image) */
+        .wallet-container { padding: 16px; }
+        .wallet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .wallet-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
+        .wallet-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
+
+        .warning-box {
+            background-color: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #d1d4dc;
+        }
+        .warning-box i { color: var(--accent-yellow); margin-right: 4px; font-size: 14px; }
+        .warning-box strong { color: var(--accent-yellow); font-weight: bold; }
+
+        .total-balance-card {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .balance-label { font-size: 11px; color: var(--text-muted); }
+        .total-amount { font-size: 26px; font-weight: bold; margin: 6px 0 2px 0; }
+        .currency-sub { font-size: 11px; color: var(--text-muted); }
+
+        .balance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        .balance-subcard {
+            background-color: var(--bg-card);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .subcard-header { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--text-muted); margin-bottom: 8px; }
+        .subcard-amount { font-size: 18px; font-weight: bold; }
+        .subcard-amount.green { color: var(--accent-green); }
+        .subcard-amount.yellow { color: var(--accent-yellow); }
+
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .action-tile {
+            border-radius: 12px;
+            padding: 16px 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        .action-tile.deposit { background-color: var(--accent-green); color: #000; }
+        .action-tile.withdraw { background-color: var(--accent-yellow); color: #000; }
+        .action-tile.history { background-color: var(--bg-card); color: #ffffff; }
+        .action-tile i { font-size: 18px; }
+        .action-tile.history i {
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .bonus-card {
+            background-color: #171622;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        .bonus-header { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 12px; }
+        .bonus-icon { width: 32px; height: 32px; background-color: rgba(138, 43, 226, 0.2); border-radius: 8px; color: #a855f7; display: flex; justify-content: center; align-items: center; font-size: 16px; }
+        .bonus-title h3 { margin: 0; font-size: 14px; color: #fff; }
+        .bonus-title p { margin: 2px 0 0 0; font-size: 11px; color: var(--text-muted); }
+        .bonus-balance { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; }
+        .bonus-val { font-size: 18px; font-weight: bold; color: #a855f7; }
     </style>
 </head>
 <body>
@@ -236,7 +319,7 @@
         </div>
     </div>
 
-    <!-- ORDERS VIEW (Matches your image) -->
+    <!-- ORDERS VIEW -->
     <div id="orders" class="view">
         <div class="orders-container">
             <div class="orders-header">
@@ -252,7 +335,6 @@
                 <button id="completedBtn" class="orders-toggle-btn" onclick="setOrderTab('completed')">Completed</button>
             </div>
 
-            <!-- Ongoing Orders View -->
             <div id="ongoingOrdersList">
                 <div class="orders-empty-state">
                     <div class="orders-empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
@@ -262,7 +344,6 @@
                 </div>
             </div>
 
-            <!-- Completed Orders View -->
             <div id="completedOrdersList" style="display: none;">
                 <div class="orders-empty-state">
                     <div class="orders-empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
@@ -319,11 +400,74 @@
         </div>
     </div>
 
-    <!-- WALLET VIEW -->
+    <!-- WALLET VIEW (Matches your image) -->
     <div id="wallet" class="view">
-        <div style="padding:16px;">
-            <h2>Wallet</h2>
-            <p style="color: var(--text-muted);">Asset balance overview...</p>
+        <div class="wallet-container">
+            <div class="wallet-header">
+                <div>
+                    <h1>Wallet</h1>
+                    <p>Manage your funds</p>
+                </div>
+                <button class="refresh-btn" onclick="refreshWallet()"><i class="fa-solid fa-rotate-right"></i></button>
+            </div>
+
+            <div class="warning-box">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>IMPORTANT:</strong> We support USDT on <strong>Solana (SPL)</strong> and <strong>BNB Smart Chain (BEP20)</strong>. Always pick the correct network before depositing or withdrawing, and only send USDT on the network you selected. Sending on the wrong network can cause permanent loss of funds.
+            </div>
+
+            <div class="total-balance-card">
+                <div class="balance-label">Total Balance</div>
+                <div class="total-amount" id="totalBalance">$0.00</div>
+                <div class="currency-sub">USDT</div>
+            </div>
+
+            <div class="balance-grid">
+                <div class="balance-subcard">
+                    <div class="subcard-header">
+                        <i class="fa-regular fa-circle-down" style="color:var(--accent-green)"></i>
+                        <span>Available</span>
+                    </div>
+                    <div class="subcard-amount green" id="availBalance">$0.00</div>
+                    <div class="currency-sub">USDT</div>
+                </div>
+                <div class="balance-subcard">
+                    <div class="subcard-header">
+                        <i class="fa-regular fa-clock" style="color:var(--accent-yellow)"></i>
+                        <span>In Escrow</span>
+                    </div>
+                    <div class="subcard-amount yellow" id="escrowBalance">$0.00</div>
+                    <div class="currency-sub">USDT</div>
+                </div>
+            </div>
+
+            <div class="wallet-actions">
+                <button class="action-tile deposit" onclick="handleDeposit()">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Deposit</span>
+                </button>
+                <button class="action-tile withdraw" onclick="handleWithdraw()">
+                    <i class="fa-solid fa-upload"></i>
+                    <span>Withdraw</span>
+                </button>
+                <button class="action-tile history" onclick="handleHistory()">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>History</span>
+                </button>
+            </div>
+
+            <div class="bonus-card">
+                <div class="bonus-header">
+                    <div class="bonus-icon"><i class="fa-solid fa-gift"></i></div>
+                    <div class="bonus-title">
+                        <h3>Trade Bonus Wallet</h3>
+                        <p>Merchant: 0.75 / 0.75 ETB per USDT (T1/T2)</p>
+                    </div>
+                </div>
+                <div class="bonus-balance">
+                    <span class="balance-label">Available Balance</span>
+                    <span class="bonus-val" id="bonusBalance">0.00 ETB</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -411,6 +555,22 @@
 
         function refreshOrders() {
             tg.sendData(JSON.stringify({ action: "refresh_orders" }));
+        }
+
+        function refreshWallet() {
+            tg.sendData(JSON.stringify({ action: "refresh_wallet" }));
+        }
+
+        function handleDeposit() {
+            tg.sendData(JSON.stringify({ action: "open_deposit" }));
+        }
+
+        function handleWithdraw() {
+            tg.sendData(JSON.stringify({ action: "open_withdraw" }));
+        }
+
+        function handleHistory() {
+            tg.sendData(JSON.stringify({ action: "open_wallet_history" }));
         }
 
         function filterAds(type, element) {
