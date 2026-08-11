@@ -101,7 +101,7 @@
         .orders-header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
         .refresh-btn { background-color: var(--btn-bg); color: var(--accent-yellow); border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 14px; }
 
-        .orders-toggle-bar { display: inline-flex; background-color: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 40px; }
+        .orders-toggle-bar { display: inline-flex; background-color: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
         .orders-toggle-btn { background: none; border: none; color: var(--text-muted); padding: 8px 20px; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; }
         .orders-toggle-btn.active { background-color: var(--accent-yellow); color: #000; font-weight: bold; }
 
@@ -110,6 +110,11 @@
         .orders-empty-title { font-size: 18px; font-weight: bold; margin: 0 0 8px 0; }
         .orders-empty-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 24px 0; max-width: 260px; line-height: 1.4; }
         .btn-browse { background-color: var(--accent-yellow); color: #000; border: none; padding: 12px 32px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
+
+        .order-card-item { background-color: var(--bg-card); border-radius: 12px; padding: 16px; margin-bottom: 12px; border-left: 4px solid var(--accent-yellow); }
+        .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .order-title { font-size: 14px; font-weight: bold; }
+        .order-status { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(251, 215, 67, 0.15); color: var(--accent-yellow); font-weight: bold; }
 
         /* ADS VIEW STYLES */
         .ads-container { padding: 16px; }
@@ -335,7 +340,7 @@
             cursor: pointer;
         }
 
-        /* BUY ORDER SCREEN STYLES (from image) */
+        /* BUY ORDER SCREEN STYLES */
         .trade-modal-section {
             background-color: var(--bg-card);
             border-radius: 12px;
@@ -348,17 +353,10 @@
             color: #ffffff;
             margin-bottom: 12px;
         }
-        .pm-display-box {
-            background-color: #181d23;
-            border-radius: 8px;
-            padding: 12px 14px;
-            font-size: 14px;
-            color: #ffffff;
-            margin-bottom: 8px;
-        }
         .pm-sub-hint {
             font-size: 11px;
             color: var(--text-muted);
+            margin-top: 6px;
         }
         .currency-toggle-group {
             display: grid;
@@ -759,7 +757,7 @@
                     <h1>My Orders</h1>
                     <p>Track your trade activity</p>
                 </div>
-                <button class="refresh-btn" onclick="refreshOrders()"><i class="fa-solid fa-rotate-right"></i></button>
+                <button class="refresh-btn" onclick="renderOngoingOrders()"><i class="fa-solid fa-rotate-right"></i></button>
             </div>
 
             <div class="orders-toggle-bar">
@@ -767,14 +765,7 @@
                 <button id="completedBtn" class="orders-toggle-btn" onclick="setOrderTab('completed')">Completed</button>
             </div>
 
-            <div id="ongoingOrdersList">
-                <div class="orders-empty-state">
-                    <div class="orders-empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
-                    <p class="orders-empty-title">No ongoing orders or requests</p>
-                    <p class="orders-empty-sub">Start trading to see your active orders and requests here</p>
-                    <button class="btn-browse" onclick="switchTab('home', document.querySelectorAll('.nav-item')[0])">Browse Marketplace</button>
-                </div>
-            </div>
+            <div id="ongoingOrdersList"></div>
 
             <div id="completedOrdersList" style="display: none;">
                 <div class="orders-empty-state">
@@ -842,8 +833,8 @@
         </div>
 
         <div class="trade-modal-section">
-            <div class="trade-modal-title">Payment Methods</div>
-            <div class="pm-display-box" id="tradePaymentMethodName">Telebirr</div>
+            <div class="trade-modal-title">Select Payment Method</div>
+            <div class="payment-options" id="tradePaymentSelectionGroup"></div>
             <div class="pm-sub-hint">Payment details will be shared after order confirmation</div>
         </div>
 
@@ -914,10 +905,9 @@
                 <div class="form-section-title" style="margin-bottom:0;">Pricing</div>
                 <div class="input-label">Price per USDT (ETB)</div>
                 <div class="input-wrapper">
-                    <input type="number" id="adPrice" class="custom-input" value="58.50" step="0.01">
+                    <input type="number" id="adPrice" class="custom-input" value="188.00" step="0.01">
                     <span class="input-suffix">ETB</span>
                 </div>
-                <div class="input-hint">Price range from 89.12 to 267.38 ETB</div>
             </div>
 
             <div class="input-group">
@@ -940,20 +930,13 @@
                         <input type="number" id="adMax" class="custom-input" value="5000">
                     </div>
                 </div>
-                <div class="input-hint">Limits must be between 200 and 5,000,000 ETB</div>
             </div>
 
+            <!-- DYNAMIC PAYMENT METHOD SELECTION -->
             <div class="input-group">
-                <div class="form-section-title" style="margin-bottom:4px;">Payment Methods</div>
-                <div class="payment-options">
-                    <div class="payment-card-select selected" onclick="togglePaymentSelect(this)">
-                        <div class="payment-card-info">
-                            <span class="payment-card-title">Telebirr</span>
-                            <span class="payment-card-sub" id="adPaymentUserName">Temesigen Akililu lema</span>
-                        </div>
-                        <div class="payment-card-check"><i class="fa-solid fa-check"></i></div>
-                    </div>
-                </div>
+                <div class="form-section-title" style="margin-bottom:4px;">Select Payment Methods</div>
+                <div class="payment-options" id="adPaymentOptionsContainer"></div>
+                <div class="input-hint" style="margin-top:4px;">Click 'Payment Accounts' in 'More' tab to add more methods.</div>
             </div>
 
             <div class="input-group">
@@ -1232,17 +1215,14 @@
         <h1 style="font-size: 22px; margin: 0 0 4px 0;">Payment Accounts</h1>
         <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted);">Manage your payment methods</p>
 
-        <!-- Container for list of added accounts -->
         <div id="savedPaymentAccountsList"></div>
 
-        <!-- Add Payment Method Form Card -->
         <div class="pm-modal-card">
             <div class="pm-modal-header">
                 <div class="pm-modal-title">Add Payment Method</div>
                 <div class="pm-close-btn" onclick="closePaymentAccountsModal()"><i class="fa-solid fa-xmark"></i></div>
             </div>
 
-            <!-- Provider -->
             <div class="pm-field">
                 <label class="pm-label">Provider <span>*</span></label>
                 <select id="pmProvider" class="pm-select">
@@ -1255,26 +1235,22 @@
                 </select>
             </div>
 
-            <!-- Account Name -->
             <div class="pm-field">
                 <label class="pm-label">Account Name <span>*</span></label>
                 <input type="text" id="pmAccountName" class="pm-input pm-input-disabled" value="Temesigen Akililu lema" readonly>
-                <div class="pm-subtext">Uses your verified full name (cannot be changed)</div>
+                <div class="pm-subtext">Uses your verified full name</div>
             </div>
 
-            <!-- Account Number (Optional) -->
             <div class="pm-field">
                 <label class="pm-label">Account Number (Optional)</label>
                 <input type="text" id="pmAccountNumber" class="pm-input" placeholder="Account number">
             </div>
 
-            <!-- Phone Number (Optional) -->
             <div class="pm-field">
                 <label class="pm-label">Phone Number (Optional)</label>
                 <input type="tel" id="pmPhoneNumber" class="pm-input" placeholder="Phone number">
             </div>
 
-            <!-- Action Buttons -->
             <div class="pm-btn-row">
                 <button class="pm-btn-cancel" onclick="closePaymentAccountsModal()">Cancel</button>
                 <button class="pm-btn-save" onclick="savePaymentMethod()">Save</button>
@@ -1292,57 +1268,14 @@
         <h1 style="font-size: 22px; margin: 0 0 4px 0;">How to Use</h1>
         <p style="margin: 0 0 16px 0; font-size: 13px; color: var(--text-muted);">Learn how to navigate and trade on AllP2P</p>
 
-        <!-- Section 1 -->
         <div class="guide-section">
             <div class="guide-title"><i class="fa-solid fa-bullhorn"></i> 1. Creating Ads</div>
             <ul class="guide-list">
                 <li>Navigate to the "Ads" tab in the bottom navigation</li>
                 <li>Click the "Create" button to start creating an ad</li>
                 <li>Choose between "Buy" or "Sell" USDT</li>
-                <li>Set your preferred price, trade limits, and payment methods</li>
+                <li>Set your preferred price, trade limits, and select payment methods</li>
                 <li>Your ad will appear in the marketplace once published</li>
-            </ul>
-        </div>
-
-        <!-- Section 2 -->
-        <div class="guide-section">
-            <div class="guide-title"><i class="fa-solid fa-cart-shopping"></i> 2. Placing Orders</div>
-            <ul class="guide-list">
-                <li>Browse available buy/sell offers on the "Home" tab</li>
-                <li>Click on an offer to view trader stats and terms</li>
-                <li>Enter the amount you wish to trade and confirm</li>
-                <li>Submit your order request and await advertiser acceptance</li>
-            </ul>
-        </div>
-
-        <!-- Section 3 -->
-        <div class="guide-section">
-            <div class="guide-title"><i class="fa-solid fa-wallet"></i> 3. Managing Wallet</div>
-            <ul class="guide-list">
-                <li>Access your balances under the "Wallet" tab</li>
-                <li>View your total, available, and locked escrow funds</li>
-                <li>Click "Deposit" to top up using Solana or BNB Smart Chain (BEP20)</li>
-                <li>Click "Withdraw" to transfer funds to external wallets</li>
-            </ul>
-        </div>
-
-        <!-- Section 4 -->
-        <div class="guide-section">
-            <div class="guide-title"><i class="fa-solid fa-shield-halved"></i> 4. Safety Tips</div>
-            <ul class="guide-list">
-                <li>Trade with verified users having high reliability scores</li>
-                <li>Always confirm local bank/payment receipts before releasing crypto</li>
-                <li>Rely on the built-in escrow system for secure trade fulfillment</li>
-                <li>Never share private keys, passwords, or recovery codes</li>
-            </ul>
-        </div>
-
-        <!-- Section 5 -->
-        <div class="guide-section">
-            <div class="guide-title"><i class="fa-solid fa-circle-question"></i> 5. Need Help?</div>
-            <ul class="guide-list">
-                <li>Access the Contact Center under the More menu for active support</li>
-                <li>Check for platform updates and tips in official community updates</li>
             </ul>
         </div>
     </div>
@@ -1378,44 +1311,45 @@
         let selectedType = 'buy';
         let currentFilter = 'all';
 
-        // Current Active Trade State
         let currentTrade = {
             sellerName: 'Azuz',
             rate: 188.00,
             minETB: 3690.44,
             maxETB: 50000,
-            paymentMethod: 'Telebirr',
+            acceptedPayments: ['Telebirr', 'CBE Birr', 'Awash Bank'],
+            chosenPayment: 'Telebirr',
             currency: 'USD'
         };
 
-        // Default Market Ads
         const defaultBuyAds = [
-            { id: 'def1', username: 'Worldcup2026', type: 'buy', price: '187.00', min: '5000', max: '7526.75', payment: 'Telebirr', stats: '91% | 6 orders' },
-            { id: 'def2', username: 'welay36', type: 'buy', price: '187.25', min: '3000', max: '51842.03', payment: 'Telebirr', stats: '92% | 15 orders' }
+            { id: 'def1', username: 'Worldcup2026', type: 'buy', price: '187.00', min: '5000', max: '7526.75', payments: ['Telebirr', 'CBE Birr'], stats: '91% | 6 orders' },
+            { id: 'def2', username: 'welay36', type: 'buy', price: '187.25', min: '3000', max: '51842.03', payments: ['Telebirr', 'Awash Bank'], stats: '92% | 15 orders' }
         ];
 
         const defaultSellAds = [
-            { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payment: 'Telebirr', stats: '98% | 42 orders' }
+            { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
         ];
 
-        // Storage Helpers
-        function getStoredAds() {
-            return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]');
-        }
-
-        function saveStoredAds(ads) {
-            localStorage.setItem('allp2p_user_ads', JSON.stringify(ads));
-        }
+        function getStoredAds() { return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]'); }
+        function saveStoredAds(ads) { localStorage.setItem('allp2p_user_ads', JSON.stringify(ads)); }
 
         function getStoredPaymentMethods() {
-            return JSON.parse(localStorage.getItem('allp2p_payment_methods') || '[]');
+            const methods = JSON.parse(localStorage.getItem('allp2p_payment_methods') || '[]');
+            if (methods.length === 0) {
+                return [
+                    { id: 'pm_def1', provider: 'Telebirr', accountName: 'Temesigen Akililu lema' },
+                    { id: 'pm_def2', provider: 'CBE Birr', accountName: 'Temesigen Akililu lema' },
+                    { id: 'pm_def3', provider: 'Awash Bank', accountName: 'Temesigen Akililu lema' }
+                ];
+            }
+            return methods;
         }
 
-        function saveStoredPaymentMethods(methods) {
-            localStorage.setItem('allp2p_payment_methods', JSON.stringify(methods));
-        }
+        function saveStoredPaymentMethods(methods) { localStorage.setItem('allp2p_payment_methods', JSON.stringify(methods)); }
 
-        // Render Functions
+        function getOngoingOrders() { return JSON.parse(localStorage.getItem('allp2p_ongoing_orders') || '[]'); }
+        function saveOngoingOrders(orders) { localStorage.setItem('allp2p_ongoing_orders', JSON.stringify(orders)); }
+
         function renderHomeAds() {
             const userAds = getStoredAds();
             const buyContainer = document.getElementById('buyMarketList');
@@ -1452,6 +1386,10 @@
             const btnText = isBuy ? 'Buy' : 'Sell';
             const username = ad.username || (tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'You');
             const avatarChar = username.charAt(0).toUpperCase();
+            
+            const paymentList = (ad.payments && ad.payments.length > 0) ? ad.payments : [ad.payment || 'Telebirr'];
+            const tagsHTML = paymentList.map(p => `<span class="tag">${p}</span>`).join('');
+            const pmParam = encodeURIComponent(JSON.stringify(paymentList));
 
             return `
                 <div class="card">
@@ -1465,24 +1403,88 @@
                         </div>
                         ${isMyAd ? 
                             `<button class="action-btn sell-bg" onclick="deleteAd('${ad.id}')">Delete</button>` : 
-                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${ad.payment || 'Telebirr'}')">${btnText}</button>`
+                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${pmParam}')">${btnText}</button>`
                         }
                     </div>
                     <div class="card-details">
                         <div class="detail-col"><span class="label">Price</span><span class="price-val">${ad.price} <span style="font-size:11px;">ETB</span></span></div>
                         <div class="detail-col"><span class="label">Limit</span><span class="limit-val">${Number(ad.min).toLocaleString()} -<br>${Number(ad.max).toLocaleString()} ETB</span></div>
-                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">${ad.payment || 'Telebirr'}</span></div></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags">${tagsHTML}</div></div>
                     </div>
                 </div>
             `;
         }
 
-        function deleteAd(id) {
-            let userAds = getStoredAds();
-            userAds = userAds.filter(a => a.id !== id);
-            saveStoredAds(userAds);
-            renderMyAds();
-            renderHomeAds();
+        function renderOngoingOrders() {
+            const container = document.getElementById('ongoingOrdersList');
+            const orders = getOngoingOrders();
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="orders-empty-state">
+                        <div class="orders-empty-icon"><i class="fa-solid fa-circle-exclamation"></i></div>
+                        <p class="orders-empty-title">No ongoing orders or requests</p>
+                        <p class="orders-empty-sub">Start trading to see your active orders and requests here</p>
+                        <button class="btn-browse" onclick="switchTab('home', document.querySelectorAll('.nav-item')[0])">Browse Marketplace</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => `
+                <div class="order-card-item">
+                    <div class="order-card-header">
+                        <span class="order-title">Order #${ord.id.slice(-6)}</span>
+                        <span class="order-status">${ord.status}</span>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Trader</span><span class="limit-val">${ord.seller}</span></div>
+                        <div class="detail-col"><span class="label">Amount</span><span class="limit-val">${ord.amountUSDT} USDT</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment Method</span><span class="price-val" style="font-size:13px; color:var(--accent-yellow);">${ord.chosenPayment}</span></div>
+                    </div>
+                    <div style="margin-top:10px; font-size:12px; color:var(--text-muted);">
+                        Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function populateAdPaymentMethods() {
+            const container = document.getElementById('adPaymentOptionsContainer');
+            const methods = getStoredPaymentMethods();
+
+            if (methods.length === 0) {
+                container.innerHTML = `<div style="font-size:12px; color:var(--accent-yellow);">No saved payment methods. Please add one in 'More' > 'Payment Accounts' first.</div>`;
+                return;
+            }
+
+            container.innerHTML = methods.map((pm, index) => `
+                <div class="payment-card-select ${index === 0 ? 'selected' : ''}" onclick="togglePaymentSelect(this)" data-provider="${pm.provider}">
+                    <div class="payment-card-info">
+                        <span class="payment-card-title">${pm.provider}</span>
+                        <span class="payment-card-sub">${pm.accountName} ${pm.accountNumber ? '• ' + pm.accountNumber : ''}</span>
+                    </div>
+                    <div class="payment-card-check" style="display: ${index === 0 ? 'block' : 'none'};"><i class="fa-solid fa-check"></i></div>
+                </div>
+            `).join('');
+        }
+
+        function createNewAd() { 
+            populateAdPaymentMethods();
+            document.getElementById('createAdModal').classList.add('active'); 
+        }
+
+        function closeCreateAd() { document.getElementById('createAdModal').classList.remove('active'); }
+
+        function togglePaymentSelect(element) {
+            const checkIcon = element.querySelector('.payment-card-check');
+            if (element.classList.contains('selected')) {
+                element.classList.remove('selected');
+                checkIcon.style.display = 'none';
+            } else {
+                element.classList.add('selected');
+                checkIcon.style.display = 'block';
+            }
         }
 
         function submitNewAd() {
@@ -1492,8 +1494,16 @@
             const max = document.getElementById('adMax').value;
             const terms = document.getElementById('adTerms').value;
 
+            const selectedCards = document.querySelectorAll('#adPaymentOptionsContainer .payment-card-select.selected');
+            const selectedPayments = Array.from(selectedCards).map(card => card.getAttribute('data-provider'));
+
             if (!price || !amount || !min || !max) {
                 alert('Please fill in all required fields.');
+                return;
+            }
+
+            if (selectedPayments.length === 0) {
+                alert('Please select at least one payment method.');
                 return;
             }
 
@@ -1505,7 +1515,7 @@
                 amount: amount,
                 min: min,
                 max: max,
-                payment: 'Telebirr',
+                payments: selectedPayments,
                 terms: terms,
                 stats: '100% | 0 orders'
             };
@@ -1521,72 +1531,31 @@
             renderHomeAds();
         }
 
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            
-            document.getElementById(tabId).classList.add('active');
-            if (element) element.classList.add('active');
-        }
+        /* TRADE MODAL WITH BUYER PAYMENT SELECTION */
+        function startTrade(traderName, rate, min, max, encodedPayments) {
+            let payments = ['Telebirr'];
+            try {
+                payments = JSON.parse(decodeURIComponent(encodedPayments));
+            } catch(e) { payments = ['Telebirr']; }
 
-        function setHomeMarketMode(mode) {
-            const buyBtn = document.getElementById('buyToggleBtn');
-            const sellBtn = document.getElementById('sellToggleBtn');
-            const buyList = document.getElementById('buyMarketList');
-            const sellList = document.getElementById('sellMarketList');
-
-            if (mode === 'buy') {
-                buyBtn.className = 'home-toggle-btn active-buy';
-                sellBtn.className = 'home-toggle-btn';
-                buyList.style.display = 'block';
-                sellList.style.display = 'none';
-            } else {
-                sellBtn.className = 'home-toggle-btn active-sell';
-                buyBtn.className = 'home-toggle-btn';
-                sellList.style.display = 'block';
-                buyList.style.display = 'none';
-            }
-        }
-
-        function filterAds(type, element) {
-            currentFilter = type;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            element.classList.add('active');
-            renderMyAds();
-        }
-
-        function setOrderTab(tab) {
-            const ongoingBtn = document.getElementById('ongoingBtn');
-            const completedBtn = document.getElementById('completedBtn');
-            const ongoingList = document.getElementById('ongoingOrdersList');
-            const completedList = document.getElementById('completedOrdersList');
-
-            if (tab === 'ongoing') {
-                ongoingBtn.className = 'orders-toggle-btn active';
-                completedBtn.className = 'orders-toggle-btn';
-                ongoingList.style.display = 'block';
-                completedList.style.display = 'none';
-            } else {
-                completedBtn.className = 'orders-toggle-btn active';
-                ongoingBtn.className = 'orders-toggle-btn';
-                completedList.style.display = 'block';
-                ongoingList.style.display = 'none';
-            }
-        }
-
-        function createNewAd() { document.getElementById('createAdModal').classList.add('active'); }
-        function closeCreateAd() { document.getElementById('createAdModal').classList.remove('active'); }
-
-        /* BUY ORDER MODAL LOGIC */
-        function startTrade(traderName, rate, min, max, payment) {
             currentTrade.sellerName = traderName;
             currentTrade.rate = parseFloat(rate);
-            currentTrade.minETB = parseFloat(min) || 3690.44;
+            currentTrade.minETB = parseFloat(min) || 200;
             currentTrade.maxETB = parseFloat(max) || 50000;
-            currentTrade.paymentMethod = payment || 'Telebirr';
+            currentTrade.acceptedPayments = payments;
+            currentTrade.chosenPayment = payments[0];
             currentTrade.currency = 'USD';
 
-            document.getElementById('tradePaymentMethodName').innerText = currentTrade.paymentMethod;
+            const paymentContainer = document.getElementById('tradePaymentSelectionGroup');
+            paymentContainer.innerHTML = payments.map((pm, idx) => `
+                <div class="payment-card-select ${idx === 0 ? 'selected' : ''}" onclick="selectTradePayment(this, '${pm}')">
+                    <div class="payment-card-info">
+                        <span class="payment-card-title">${pm}</span>
+                    </div>
+                    <div class="payment-card-check" style="display: ${idx === 0 ? 'block' : 'none'};"><i class="fa-solid fa-check"></i></div>
+                </div>
+            `).join('');
+
             document.getElementById('tradeSellerUsername').innerText = currentTrade.sellerName;
             document.getElementById('tradeRateInfo').innerText = `Rate: 1 USD = ${currentTrade.rate.toFixed(2)} ETB`;
             document.getElementById('tradeInputAmount').value = "18";
@@ -1595,9 +1564,17 @@
             document.getElementById('buyOrderModal').classList.add('active');
         }
 
-        function closeBuyOrderModal() {
-            document.getElementById('buyOrderModal').classList.remove('active');
+        function selectTradePayment(element, pm) {
+            document.querySelectorAll('#tradePaymentSelectionGroup .payment-card-select').forEach(card => {
+                card.classList.remove('selected');
+                card.querySelector('.payment-card-check').style.display = 'none';
+            });
+            element.classList.add('selected');
+            element.querySelector('.payment-card-check').style.display = 'block';
+            currentTrade.chosenPayment = pm;
         }
+
+        function closeBuyOrderModal() { document.getElementById('buyOrderModal').classList.remove('active'); }
 
         function setBuyCurrency(curr) {
             currentTrade.currency = curr;
@@ -1663,61 +1640,88 @@
             }
 
             const tradeData = {
-                action: "execute_buy_trade",
+                id: 'ord_' + Date.now(),
                 seller: currentTrade.sellerName,
                 rate: currentTrade.rate,
                 amountUSDT: totalUSDT.toFixed(2),
                 amountETB: (totalUSDT * currentTrade.rate).toFixed(2),
-                paymentMethod: currentTrade.paymentMethod
+                chosenPayment: currentTrade.chosenPayment,
+                status: 'PENDING'
             };
 
-            tg.sendData(JSON.stringify(tradeData));
-            alert(`Order request sent to ${currentTrade.sellerName}!`);
+            const ongoing = getOngoingOrders();
+            ongoing.unshift(tradeData);
+            saveOngoingOrders(ongoing);
+
+            tg.sendData(JSON.stringify({ action: "execute_buy_trade", trade: tradeData }));
+            alert(`Order sent! Chosen Payment: ${currentTrade.chosenPayment}`);
             closeBuyOrderModal();
+            renderOngoingOrders();
         }
 
-        // Profile Modal Functions
-        function openProfileModal() {
-            populateUserInfo();
-            document.getElementById('profileModal').classList.add('active');
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            if (element) element.classList.add('active');
+            if (tabId === 'orders') renderOngoingOrders();
         }
 
-        function closeProfileModal() {
-            document.getElementById('profileModal').classList.remove('active');
+        function setHomeMarketMode(mode) {
+            const buyBtn = document.getElementById('buyToggleBtn');
+            const sellBtn = document.getElementById('sellToggleBtn');
+            const buyList = document.getElementById('buyMarketList');
+            const sellList = document.getElementById('sellMarketList');
+
+            if (mode === 'buy') {
+                buyBtn.className = 'home-toggle-btn active-buy';
+                sellBtn.className = 'home-toggle-btn';
+                buyList.style.display = 'block';
+                sellList.style.display = 'none';
+            } else {
+                sellBtn.className = 'home-toggle-btn active-sell';
+                buyBtn.className = 'home-toggle-btn';
+                sellList.style.display = 'block';
+                buyList.style.display = 'none';
+            }
         }
 
-        function editProfileField(field) {
-            tg.sendData(JSON.stringify({ action: "edit_profile_field", field: field }));
+        function filterAds(type, element) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            renderMyAds();
         }
 
-        // Payment Accounts Modal Functions
-        function openPaymentAccountsModal() {
-            populateUserInfo();
-            renderSavedPaymentMethods();
-            document.getElementById('paymentAccountsModal').classList.add('active');
+        function setOrderTab(tab) {
+            const ongoingBtn = document.getElementById('ongoingBtn');
+            const completedBtn = document.getElementById('completedBtn');
+            const ongoingList = document.getElementById('ongoingOrdersList');
+            const completedList = document.getElementById('completedOrdersList');
+
+            if (tab === 'ongoing') {
+                ongoingBtn.className = 'orders-toggle-btn active';
+                completedBtn.className = 'orders-toggle-btn';
+                ongoingList.style.display = 'block';
+                completedList.style.display = 'none';
+            } else {
+                completedBtn.className = 'orders-toggle-btn active';
+                ongoingBtn.className = 'orders-toggle-btn';
+                completedList.style.display = 'block';
+                ongoingList.style.display = 'none';
+            }
         }
 
-        function closePaymentAccountsModal() {
-            document.getElementById('paymentAccountsModal').classList.remove('active');
-        }
-
-        // How To Use Modal Functions
-        function openHowToUseModal() {
-            document.getElementById('howToUseModal').classList.add('active');
-        }
-
-        function closeHowToUseModal() {
-            document.getElementById('howToUseModal').classList.remove('active');
-        }
+        function openProfileModal() { populateUserInfo(); document.getElementById('profileModal').classList.add('active'); }
+        function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
+        function openPaymentAccountsModal() { populateUserInfo(); renderSavedPaymentMethods(); document.getElementById('paymentAccountsModal').classList.add('active'); }
+        function closePaymentAccountsModal() { document.getElementById('paymentAccountsModal').classList.remove('active'); }
+        function openHowToUseModal() { document.getElementById('howToUseModal').classList.add('active'); }
+        function closeHowToUseModal() { document.getElementById('howToUseModal').classList.remove('active'); }
 
         function renderSavedPaymentMethods() {
             const listContainer = document.getElementById('savedPaymentAccountsList');
             const methods = getStoredPaymentMethods();
-
-            if (methods.length === 0) {
-                listContainer.innerHTML = '';
-                return;
-            }
 
             listContainer.innerHTML = methods.map(pm => `
                 <div class="pm-account-card">
@@ -1736,10 +1740,7 @@
             const accountNumber = document.getElementById('pmAccountNumber').value;
             const phoneNumber = document.getElementById('pmPhoneNumber').value;
 
-            if (!provider) {
-                alert('Please select a provider.');
-                return;
-            }
+            if (!provider) { alert('Please select a provider.'); return; }
 
             const newPaymentMethod = {
                 id: 'pm_' + Date.now(),
@@ -1755,7 +1756,6 @@
 
             tg.sendData(JSON.stringify({ action: "add_payment_method", method: newPaymentMethod }));
 
-            // Reset inputs
             document.getElementById('pmProvider').value = '';
             document.getElementById('pmAccountNumber').value = '';
             document.getElementById('pmPhoneNumber').value = '';
@@ -1771,6 +1771,14 @@
             renderSavedPaymentMethods();
         }
 
+        function deleteAd(id) {
+            let userAds = getStoredAds();
+            userAds = userAds.filter(a => a.id !== id);
+            saveStoredAds(userAds);
+            renderMyAds();
+            renderHomeAds();
+        }
+
         function populateUserInfo() {
             if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
                 const user = tg.initDataUnsafe.user;
@@ -1781,9 +1789,7 @@
                 document.getElementById('profUsername').innerText = user.username ? '@' + user.username : '@username';
                 document.getElementById('profAvatar').innerText = (user.first_name || 'T').charAt(0).toUpperCase();
                 document.getElementById('profInfoName').innerHTML = `${formattedName} <i class="fa-solid fa-pen edit-icon" onclick="editProfileField('Full Name')"></i>`;
-                
                 document.getElementById('pmAccountName').value = formattedName;
-                document.getElementById('adPaymentUserName').innerText = formattedName;
             }
         }
 
@@ -1801,32 +1807,18 @@
             }
         }
 
-        function togglePaymentSelect(element) {
-            const checkIcon = element.querySelector('.payment-card-check');
-            if (element.classList.contains('selected')) {
-                element.classList.remove('selected');
-                checkIcon.style.display = 'none';
-            } else {
-                element.classList.add('selected');
-                checkIcon.style.display = 'block';
-            }
-        }
-
+        function editProfileField(field) { tg.sendData(JSON.stringify({ action: "edit_profile_field", field: field })); }
         function openMoreOption(action) { tg.sendData(JSON.stringify({ action: action })); }
-        function refreshOrders() { tg.sendData(JSON.stringify({ action: "refresh_orders" })); }
         function refreshWallet() { tg.sendData(JSON.stringify({ action: "refresh_wallet" })); }
         function handleDeposit() { tg.sendData(JSON.stringify({ action: "open_deposit" })); }
         function handleWithdraw() { tg.sendData(JSON.stringify({ action: "open_withdraw" })); }
         function handleHistory() { tg.sendData(JSON.stringify({ action: "open_wallet_history" })); }
-
-        function toggleOnlineStatus() {
-            const isChecked = document.getElementById('keepOnlineToggle').checked;
-            tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
-        }
+        function toggleOnlineStatus() { tg.sendData(JSON.stringify({ action: "toggle_online", status: document.getElementById('keepOnlineToggle').checked })); }
 
         window.onload = function() {
             renderHomeAds();
             renderMyAds();
+            renderOngoingOrders();
             populateUserInfo();
         };
     </script>
