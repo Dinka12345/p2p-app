@@ -130,7 +130,7 @@
         input:checked + .slider { background-color: var(--accent-green); }
         input:checked + .slider:before { transform: translateX(20px); }
 
-        .filter-bar { display: flex; background-color: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 30px; }
+        .filter-bar { display: flex; background-color: var(--bg-card); border-radius: 8px; padding: 4px; margin-bottom: 20px; }
         .filter-btn { flex: 1; background: none; border: none; color: var(--text-muted); padding: 8px 0; font-size: 13px; font-weight: 500; border-radius: 6px; cursor: pointer; text-align: center; }
         .filter-btn.active { background-color: var(--accent-yellow); color: #000; font-weight: bold; }
         .filter-btn.accounts-btn { color: var(--accent-green); }
@@ -141,10 +141,10 @@
         .empty-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 16px 0; }
         .btn-create-center { background-color: var(--accent-yellow); color: #000; border: none; padding: 10px 24px; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; }
 
-        .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+        .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 16px; }
         .note-card strong { color: var(--accent-yellow); }
 
-        /* CREATE AD FORM MODAL STYLES (Matches your image) */
+        /* CREATE AD FORM MODAL STYLES */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -428,64 +428,10 @@
             <button id="sellToggleBtn" class="home-toggle-btn" onclick="setHomeMarketMode('sell')">Sell</button>
         </div>
 
-        <div class="order-list" id="homeOrderList">
-            <div id="buyMarketList">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="user-info">
-                            <div class="avatar">W<div class="online-dot"></div></div>
-                            <div class="user-details">
-                                <h3>Worldcup2026</h3>
-                                <p class="user-stats"><i class="fa-solid fa-star"></i> 91% | 6 orders</p>
-                            </div>
-                        </div>
-                        <button class="action-btn buy-bg" onclick="startTrade('Worldcup2026', '187.00')">Buy</button>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-col"><span class="label">Price</span><span class="price-val">187.00 <span style="font-size:11px;">ETB</span></span></div>
-                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">5,000.00 -<br>7,526.75 ETB</span></div>
-                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">CBE</span><span class="tag">Abyssinia</span><span class="tag">+1</span></div></div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <div class="user-info">
-                            <div class="avatar">W<div class="online-dot"></div></div>
-                            <div class="user-details">
-                                <h3>welay36</h3>
-                                <p class="user-stats"><i class="fa-solid fa-star"></i> 92% | 15 orders</p>
-                            </div>
-                        </div>
-                        <button class="action-btn buy-bg" onclick="startTrade('welay36', '187.25')">Buy</button>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-col"><span class="label">Price</span><span class="price-val">187.25 <span style="font-size:11px;">ETB</span></span></div>
-                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">3,000.00 -<br>51,842.03 ETB</span></div>
-                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">Telebirr</span><span class="tag">Awash</span></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="sellMarketList" style="display: none;">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="user-info">
-                            <div class="avatar">A<div class="online-dot"></div></div>
-                            <div class="user-details">
-                                <h3>Ashenafi Kus...</h3>
-                                <p class="user-stats"><i class="fa-solid fa-star"></i> 87.5% | 12 orders</p>
-                            </div>
-                        </div>
-                        <button class="action-btn sell-bg" onclick="startTrade('Ashenafi', '184.10')">Sell</button>
-                    </div>
-                    <div class="card-details">
-                        <div class="detail-col"><span class="label">Price</span><span class="price-val">184.10 <span style="font-size:11px;">ETB</span></span></div>
-                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">2,000.00 -<br>3,000.00 ETB</span></div>
-                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">CBE Birr</span><span class="tag">Telebirr</span></div></div>
-                    </div>
-                </div>
-            </div>
+        <div class="order-list">
+            <!-- Dynamic list container -->
+            <div id="buyMarketList"></div>
+            <div id="sellMarketList" style="display: none;"></div>
         </div>
     </div>
 
@@ -557,7 +503,10 @@
                 <button class="filter-btn accounts-btn" onclick="filterAds('accounts', this)">Accounts</button>
             </div>
 
-            <div class="empty-state">
+            <!-- Container where created ads will render -->
+            <div id="myAdsList"></div>
+
+            <div id="myAdsEmptyState" class="empty-state">
                 <div class="empty-icon"><i class="fa-solid fa-chart-line"></i></div>
                 <p class="empty-title">No Ads Yet</p>
                 <p class="empty-sub">Create your first ad to start trading</p>
@@ -570,7 +519,7 @@
         </div>
     </div>
 
-    <!-- CREATE NEW AD MODAL (Matches your image) -->
+    <!-- CREATE NEW AD MODAL -->
     <div id="createAdModal" class="modal-overlay">
         <div class="back-nav" onclick="closeCreateAd()">
             <i class="fa-solid fa-arrow-left"></i>
@@ -643,14 +592,6 @@
                             <span class="payment-card-sub">Temesigen Akililu lema</span>
                         </div>
                         <div class="payment-card-check"><i class="fa-solid fa-check"></i></div>
-                    </div>
-
-                    <div class="payment-card-select" onclick="togglePaymentSelect(this)">
-                        <div class="payment-card-info">
-                            <span class="payment-card-title">Telebirr</span>
-                            <span class="payment-card-sub">Temesigen Akililu lema</span>
-                        </div>
-                        <div class="payment-card-check" style="display:none;"><i class="fa-solid fa-check"></i></div>
                     </div>
                 </div>
             </div>
@@ -837,6 +778,133 @@
         tg.expand();
 
         let selectedType = 'buy';
+        let currentFilter = 'all';
+
+        // Default Market Ads
+        const defaultBuyAds = [
+            { id: 'def1', username: 'Worldcup2026', type: 'buy', price: '187.00', min: '5000', max: '7526.75', payment: 'Telebirr', stats: '91% | 6 orders' },
+            { id: 'def2', username: 'welay36', type: 'buy', price: '187.25', min: '3000', max: '51842.03', payment: 'Telebirr', stats: '92% | 15 orders' }
+        ];
+
+        const defaultSellAds = [
+            { id: 'def3', username: 'Ashenafi', type: 'sell', price: '184.10', min: '2000', max: '3000', payment: 'Telebirr', stats: '87.5% | 12 orders' }
+        ];
+
+        // Storage Helper
+        function getStoredAds() {
+            return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]');
+        }
+
+        function saveStoredAds(ads) {
+            localStorage.setItem('allp2p_user_ads', JSON.stringify(ads));
+        }
+
+        // Render Functions
+        function renderHomeAds() {
+            const userAds = getStoredAds();
+            const buyContainer = document.getElementById('buyMarketList');
+            const sellContainer = document.getElementById('sellMarketList');
+
+            const allBuy = [...defaultBuyAds, ...userAds.filter(a => a.type === 'buy')];
+            const allSell = [...defaultSellAds, ...userAds.filter(a => a.type === 'sell')];
+
+            buyContainer.innerHTML = allBuy.map(ad => createAdCardHTML(ad, false)).join('');
+            sellContainer.innerHTML = allSell.map(ad => createAdCardHTML(ad, false)).join('');
+        }
+
+        function renderMyAds() {
+            const userAds = getStoredAds();
+            const myAdsContainer = document.getElementById('myAdsList');
+            const emptyState = document.getElementById('myAdsEmptyState');
+
+            let filtered = userAds;
+            if (currentFilter === 'buy') filtered = userAds.filter(a => a.type === 'buy');
+            if (currentFilter === 'sell') filtered = userAds.filter(a => a.type === 'sell');
+
+            if (filtered.length === 0) {
+                myAdsContainer.innerHTML = '';
+                emptyState.style.display = 'flex';
+            } else {
+                emptyState.style.display = 'none';
+                myAdsContainer.innerHTML = filtered.map(ad => createAdCardHTML(ad, true)).join('');
+            }
+        }
+
+        function createAdCardHTML(ad, isMyAd) {
+            const isBuy = ad.type === 'buy';
+            const btnBg = isBuy ? 'buy-bg' : 'sell-bg';
+            const btnText = isBuy ? 'Buy' : 'Sell';
+            const username = ad.username || (tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'You');
+            const avatarChar = username.charAt(0).toUpperCase();
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div class="user-info">
+                            <div class="avatar">${avatarChar}<div class="online-dot"></div></div>
+                            <div class="user-details">
+                                <h3>${username}</h3>
+                                <p class="user-stats"><i class="fa-solid fa-star"></i> ${ad.stats || '100% | New'}</p>
+                            </div>
+                        </div>
+                        ${isMyAd ? 
+                            `<button class="action-btn sell-bg" onclick="deleteAd('${ad.id}')">Delete</button>` : 
+                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}')">${btnText}</button>`
+                        }
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Price</span><span class="price-val">${ad.price} <span style="font-size:11px;">ETB</span></span></div>
+                        <div class="detail-col"><span class="label">Limit</span><span class="limit-val">${Number(ad.min).toLocaleString()} -<br>${Number(ad.max).toLocaleString()} ETB</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment</span><div class="payment-tags"><span class="tag">${ad.payment || 'Telebirr'}</span></div></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function deleteAd(id) {
+            let userAds = getStoredAds();
+            userAds = userAds.filter(a => a.id !== id);
+            saveStoredAds(userAds);
+            renderMyAds();
+            renderHomeAds();
+        }
+
+        function submitNewAd() {
+            const price = document.getElementById('adPrice').value;
+            const amount = document.getElementById('adAmount').value;
+            const min = document.getElementById('adMin').value;
+            const max = document.getElementById('adMax').value;
+            const terms = document.getElementById('adTerms').value;
+
+            if (!price || !amount || !min || !max) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const newAd = {
+                id: 'ad_' + Date.now(),
+                username: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'My Offer',
+                type: selectedType,
+                price: parseFloat(price).toFixed(2),
+                amount: amount,
+                min: min,
+                max: max,
+                payment: 'Telebirr',
+                terms: terms,
+                stats: '100% | 0 orders'
+            };
+
+            const userAds = getStoredAds();
+            userAds.push(newAd);
+            saveStoredAds(userAds);
+
+            // Send payload to Telegram WebApp Backend
+            tg.sendData(JSON.stringify({ action: "submit_ad", ad: newAd }));
+
+            closeCreateAd();
+            renderMyAds();
+            renderHomeAds();
+        }
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -865,6 +933,13 @@
             }
         }
 
+        function filterAds(type, element) {
+            currentFilter = type;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            element.classList.add('active');
+            renderMyAds();
+        }
+
         function setOrderTab(tab) {
             const ongoingBtn = document.getElementById('ongoingBtn');
             const completedBtn = document.getElementById('completedBtn');
@@ -884,13 +959,8 @@
             }
         }
 
-        function createNewAd() {
-            document.getElementById('createAdModal').classList.add('active');
-        }
-
-        function closeCreateAd() {
-            document.getElementById('createAdModal').classList.remove('active');
-        }
+        function createNewAd() { document.getElementById('createAdModal').classList.add('active'); }
+        function closeCreateAd() { document.getElementById('createAdModal').classList.remove('active'); }
 
         function selectAdType(type) {
             selectedType = type;
@@ -917,30 +987,13 @@
             }
         }
 
-        function submitNewAd() {
-            const payload = {
-                action: "submit_ad",
-                type: selectedType,
-                price: document.getElementById('adPrice').value,
-                amount: document.getElementById('adAmount').value,
-                minLimit: document.getElementById('adMin').value,
-                maxLimit: document.getElementById('adMax').value,
-                terms: document.getElementById('adTerms').value
-            };
-            tg.sendData(JSON.stringify(payload));
-            closeCreateAd();
-        }
-
         function openMoreOption(action) { tg.sendData(JSON.stringify({ action: action })); }
         function refreshOrders() { tg.sendData(JSON.stringify({ action: "refresh_orders" })); }
         function refreshWallet() { tg.sendData(JSON.stringify({ action: "refresh_wallet" })); }
         function handleDeposit() { tg.sendData(JSON.stringify({ action: "open_deposit" })); }
         function handleWithdraw() { tg.sendData(JSON.stringify({ action: "open_withdraw" })); }
         function handleHistory() { tg.sendData(JSON.stringify({ action: "open_wallet_history" })); }
-        function filterAds(type, element) {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            element.classList.add('active');
-        }
+        
         function startTrade(traderName, rate) {
             tg.showConfirm(`Initiate order with ${traderName} at ${rate} ETB?`, function(confirmed) {
                 if (confirmed) {
@@ -948,10 +1001,17 @@
                 }
             });
         }
+
         function toggleOnlineStatus() {
             const isChecked = document.getElementById('keepOnlineToggle').checked;
             tg.sendData(JSON.stringify({ action: "toggle_online", status: isChecked }));
         }
+
+        // Initialize display on load
+        window.onload = function() {
+            renderHomeAds();
+            renderMyAds();
+        };
     </script>
 </body>
 </html>
