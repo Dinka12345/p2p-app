@@ -1571,7 +1571,7 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    <!-- Payment Details Dynamic View matching seller configuration -->
+                    <!-- Dynamic Payment Details Fetched from Selected Payment Configuration -->
                     <div class="next-steps-card" style="background-color: #0b0e11; border: 1px solid #2b3139; margin-top: 10px;">
                         <div class="next-steps-title" style="color: #fff; font-size: 12px; margin-bottom: 6px;">
                             Payment Details
@@ -1579,7 +1579,7 @@
                         <div style="font-size: 11px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
                             <div>Bank/Provider: <strong style="color:#fff;">${ord.chosenPayment}</strong></div>
                             <div>Account Name: <strong style="color:#fff;">${ord.seller}</strong></div>
-                            <div>Phone/Account: <strong style="color:#fff;">Verified Merchant Account</strong></div>
+                            <div>Phone/Account: <strong style="color:#fff;">${ord.sellerAccount || 'Verified Merchant Account'}</strong></div>
                             <div>Reference: <strong style="color:#fff;">ORD-${ord.id.slice(-6)}</strong></div>
                         </div>
                     </div>
@@ -1640,7 +1640,7 @@
             }
 
             container.innerHTML = methods.map((pm, index) => `
-                <div class="payment-card-select ${index === 0 ? 'selected' : ''}" onclick="togglePaymentSelect(this)" data-provider="${pm.provider}">
+                <div class="payment-card-select ${index === 0 ? 'selected' : ''}" onclick="togglePaymentSelect(this)" data-provider="${pm.provider}" data-account="${pm.accountNumber || pm.phoneNumber || 'Verified Account'}">
                     <div class="payment-card-info">
                         <span class="payment-card-title">${pm.provider}</span>
                         <span class="payment-card-sub">${pm.accountName} ${pm.accountNumber ? '• ' + pm.accountNumber : ''}</span>
@@ -1849,6 +1849,7 @@
                 amountUSDT: totalUSDT.toFixed(2),
                 amountETB: totalPayETB.toFixed(2),
                 chosenPayment: currentTrade.chosenPayment,
+                sellerAccount: 'Verified Merchant Account',
                 status: 'PENDING_APPROVAL'
             };
 
