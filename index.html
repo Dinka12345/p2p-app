@@ -138,6 +138,7 @@
         .order-status.approved { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); }
         .order-status.rejected { background: rgba(240, 74, 93, 0.15); color: var(--accent-red); }
         .order-status.paid { background: rgba(41, 182, 246, 0.15); color: var(--accent-blue); }
+        .order-status.completed { background: rgba(14, 203, 129, 0.2); color: var(--accent-green); }
 
         .approval-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn-approve { flex: 1; background-color: var(--accent-green); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
@@ -827,12 +828,7 @@
             <div id="ongoingOrdersList"></div>
 
             <div id="completedOrdersList" style="display: none;">
-                <div class="orders-empty-state">
-                    <div class="orders-empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <p class="orders-empty-title">No completed orders yet</p>
-                    <p class="orders-empty-sub">Your finished trade history will appear here</p>
-                    <button class="btn-browse" onclick="switchTab('home', document.querySelectorAll('.nav-item')[0])">Browse Marketplace</button>
-                </div>
+                <div id="completedOrdersContainer"></div>
             </div>
         </div>
     </div>
@@ -1026,7 +1022,7 @@
 
             <div class="total-balance-card">
                 <div class="balance-label">Total Balance</div>
-                <div class="total-amount" id="totalBalance">$0.00</div>
+                <div class="total-amount" id="totalBalance">$500.00</div>
                 <div class="currency-sub">USDT</div>
             </div>
 
@@ -1036,7 +1032,7 @@
                         <i class="fa-regular fa-circle-down" style="color:var(--accent-green)"></i>
                         <span>Available</span>
                     </div>
-                    <div class="subcard-amount green" id="availBalance">$0.00</div>
+                    <div class="subcard-amount green" id="availBalance">$500.00</div>
                     <div class="currency-sub">USDT</div>
                 </div>
                 <div class="balance-subcard">
@@ -1171,11 +1167,11 @@
                     <div class="stat-label">Success Rate</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-val">0</div>
+                    <div class="stat-val" id="profileCompletedCount">0</div>
                     <div class="stat-label">Completed</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-val">0</div>
+                    <div class="stat-val" id="profileTotalCount">0</div>
                     <div class="stat-label">Total</div>
                 </div>
             </div>
@@ -1243,7 +1239,7 @@
             </div>
             <div class="info-row">
                 <span class="info-label">Total Trades</span>
-                <span class="info-val">0</span>
+                <span class="info-val" id="profileTotalTradesRow">0</span>
             </div>
             <div class="info-row">
                 <span class="info-label">Cancelled</span>
@@ -1392,7 +1388,7 @@
         ];
 
         function getCurrentUsername() {
-            return (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : 'You';
+            return (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : 'Temesigen';
         }
 
         function getStoredAds() { return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]'); }
@@ -1415,6 +1411,27 @@
         function getOngoingOrders() { return JSON.parse(localStorage.getItem('allp2p_ongoing_orders') || '[]'); }
         function saveOngoingOrders(orders) { localStorage.setItem('allp2p_ongoing_orders', JSON.stringify(orders)); }
 
+        function getCompletedOrders() { return JSON.parse(localStorage.getItem('allp2p_completed_orders') || '[]'); }
+        function saveCompletedOrders(orders) { localStorage.setItem('allp2p_completed_orders', JSON.stringify(orders)); }
+
+        function getWalletBalance() {
+            const bal = localStorage.getItem('allp2p_wallet_balance');
+            return bal !== null ? parseFloat(bal) : 500.00;
+        }
+
+        function saveWalletBalance(amount) {
+            localStorage.setItem('allp2p_wallet_balance', amount.toFixed(2));
+            updateWalletDisplay();
+        }
+
+        function updateWalletDisplay() {
+            const bal = getWalletBalance();
+            const totalEl = document.getElementById('totalBalance');
+            const availEl = document.getElementById('availBalance');
+            if (totalEl) totalEl.innerText = `$${bal.toFixed(2)}`;
+            if (availEl) availEl.innerText = `$${bal.toFixed(2)}`;
+        }
+
         function updateOrdersBadge() {
             const orders = getOngoingOrders();
             const badgeEl = document.getElementById('ordersBadgeCount');
@@ -1433,6 +1450,20 @@
             } else {
                 badgeEl.style.display = 'none';
             }
+        }
+
+        function updateProfileStats() {
+            const completed = getCompletedOrders().length;
+            const ongoing = getOngoingOrders().length;
+            const total = completed + ongoing;
+
+            const cEl = document.getElementById('profileCompletedCount');
+            const tEl = document.getElementById('profileTotalCount');
+            const trEl = document.getElementById('profileTotalTradesRow');
+
+            if (cEl) cEl.innerText = completed;
+            if (tEl) tEl.innerText = total;
+            if (trEl) trEl.innerText = total;
         }
 
         function renderHomeAds() {
@@ -1504,10 +1535,47 @@
             let orders = getOngoingOrders();
             const idx = orders.findIndex(o => o.id === orderId);
             if (idx !== -1) {
-                orders[idx].status = action === 'approve' ? 'APPROVED' : 'REJECTED';
-                saveOngoingOrders(orders);
-                tg.sendData(JSON.stringify({ action: "seller_order_decision", orderId: orderId, decision: action }));
-                renderOngoingOrders();
+                if (action === 'approve') {
+                    orders[idx].status = 'APPROVED';
+                    saveOngoingOrders(orders);
+                    tg.sendData(JSON.stringify({ action: "seller_order_decision", orderId: orderId, decision: action }));
+                    renderOngoingOrders();
+                } else if (action === 'reject') {
+                    orders[idx].status = 'REJECTED';
+                    saveOngoingOrders(orders);
+                    renderOngoingOrders();
+                } else if (action === 'release') {
+                    // RELEASE ASSET LOGIC: Deduct from seller balance, add to buyer balance, move to completed
+                    const order = orders[idx];
+                    const amountUSDT = parseFloat(order.amountUSDT);
+                    const me = getCurrentUsername();
+
+                    if (order.seller === me) {
+                        let currentBal = getWalletBalance();
+                        if (currentBal < amountUSDT) {
+                            alert('Insufficient wallet balance to release assets!');
+                            return;
+                        }
+                        // Deduct from seller balance
+                        saveWalletBalance(currentBal - amountUSDT);
+                    }
+
+                    // Move order to completed
+                    order.status = 'COMPLETED';
+                    orders.splice(idx, 1);
+                    saveOngoingOrders(orders);
+
+                    let completed = getCompletedOrders();
+                    completed.unshift(order);
+                    saveCompletedOrders(completed);
+
+                    tg.sendData(JSON.stringify({ action: "release_asset", orderId: orderId, amount: amountUSDT }));
+                    alert(`Successfully released ${amountUSDT} USDT to buyer!`);
+                    
+                    renderOngoingOrders();
+                    renderCompletedOrders();
+                    updateProfileStats();
+                }
             }
         }
 
@@ -1628,6 +1696,40 @@
                 </div>
             `;
             }).join('');
+        }
+
+        function renderCompletedOrders() {
+            const container = document.getElementById('completedOrdersContainer');
+            const completed = getCompletedOrders();
+
+            if (completed.length === 0) {
+                container.innerHTML = `
+                    <div class="orders-empty-state">
+                        <div class="orders-empty-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <p class="orders-empty-title">No completed orders yet</p>
+                        <p class="orders-empty-sub">Your finished trade history will appear here</p>
+                        <button class="btn-browse" onclick="switchTab('home', document.querySelectorAll('.nav-item')[0])">Browse Marketplace</button>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = completed.map(ord => `
+                <div class="order-card-item" style="border-left-color: var(--accent-green);">
+                    <div class="order-card-header">
+                        <span class="order-title">Order #${ord.id.slice(-6)}</span>
+                        <span class="order-status completed">COMPLETED</span>
+                    </div>
+                    <div class="card-details">
+                        <div class="detail-col"><span class="label">Seller</span><span class="limit-val">${ord.seller}</span></div>
+                        <div class="detail-col"><span class="label">Amount</span><span class="limit-val">${ord.amountUSDT} USDT</span></div>
+                        <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment Method</span><span class="price-val" style="font-size:13px; color:var(--accent-yellow);">${ord.chosenPayment}</span></div>
+                    </div>
+                    <div style="margin-top:10px; font-size:12px; color:var(--text-muted);">
+                        Total Paid: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function populateAdPaymentMethods() {
@@ -1869,7 +1971,10 @@
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             if (element) element.classList.add('active');
-            if (tabId === 'orders') renderOngoingOrders();
+            if (tabId === 'orders') {
+                renderOngoingOrders();
+                renderCompletedOrders();
+            }
         }
 
         function setHomeMarketMode(mode) {
@@ -1917,7 +2022,7 @@
             }
         }
 
-        function openProfileModal() { populateUserInfo(); document.getElementById('profileModal').classList.add('active'); }
+        function openProfileModal() { populateUserInfo(); updateProfileStats(); document.getElementById('profileModal').classList.add('active'); }
         function closeProfileModal() { document.getElementById('profileModal').classList.remove('active'); }
         function openPaymentAccountsModal() { populateUserInfo(); renderSavedPaymentMethods(); document.getElementById('paymentAccountsModal').classList.add('active'); }
         function closePaymentAccountsModal() { document.getElementById('paymentAccountsModal').classList.remove('active'); }
@@ -2024,8 +2129,11 @@
             renderHomeAds();
             renderMyAds();
             renderOngoingOrders();
+            renderCompletedOrders();
             populateUserInfo();
             updateOrdersBadge();
+            updateWalletDisplay();
+            updateProfileStats();
         };
     </script>
 </body>
