@@ -34,11 +34,9 @@
             padding-bottom: 75px;
         }
 
-        /* Views */
         .view { display: none; }
         .view.active { display: block; }
 
-        /* Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -61,7 +59,6 @@
         .nav-item.active { color: var(--accent-yellow); }
         .nav-item i { font-size: 18px; }
 
-        /* HOME VIEW STYLES */
         .header { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
         .header p { margin: 4px 0 0 0; font-size: 13px; color: var(--text-muted); }
@@ -94,7 +91,6 @@
         .payment-tags { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
         .tag { background-color: var(--btn-bg); color: var(--text-muted); padding: 4px 8px; border-radius: 4px; font-size: 10px; }
 
-        /* ORDERS VIEW STYLES */
         .orders-container { padding: 16px; }
         .orders-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .orders-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -115,8 +111,13 @@
         .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .order-title { font-size: 14px; font-weight: bold; }
         .order-status { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(251, 215, 67, 0.15); color: var(--accent-yellow); font-weight: bold; }
+        .order-status.approved { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); }
+        .order-status.rejected { background: rgba(240, 74, 93, 0.15); color: var(--accent-red); }
 
-        /* NEXT STEPS INSTRUCTIONS BLOCK */
+        .approval-actions { display: flex; gap: 8px; margin-top: 12px; }
+        .btn-approve { flex: 1; background-color: var(--accent-green); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-reject { flex: 1; background-color: var(--accent-red); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
+
         .next-steps-card {
             background-color: #181d23;
             border: 1px solid var(--btn-bg);
@@ -143,7 +144,6 @@
         .next-steps-list li { margin-bottom: 4px; }
         .next-steps-list strong { color: #ffffff; }
 
-        /* ADS VIEW STYLES */
         .ads-container { padding: 16px; }
         .ads-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .ads-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -177,7 +177,6 @@
         .note-card { background-color: var(--bg-note); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 16px; font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-top: 16px; }
         .note-card strong { color: var(--accent-yellow); }
 
-        /* MODALS (GENERAL) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -367,7 +366,6 @@
             cursor: pointer;
         }
 
-        /* BUY ORDER SCREEN STYLES */
         .trade-modal-section {
             background-color: var(--bg-card);
             border-radius: 12px;
@@ -492,7 +490,6 @@
             line-height: 1.8;
         }
 
-        /* WALLET VIEW STYLES */
         .wallet-container { padding: 16px; }
         .wallet-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .wallet-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -530,7 +527,6 @@
         .bonus-balance { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; }
         .bonus-val { font-size: 18px; font-weight: bold; color: #a855f7; }
 
-        /* MORE VIEW STYLES */
         .more-container { padding: 16px; }
         .more-header { margin-bottom: 20px; }
         .more-header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -568,7 +564,6 @@
         .menu-title { font-size: 15px; font-weight: bold; color: #ffffff; }
         .menu-sub { font-size: 12px; color: var(--text-muted); }
 
-        /* PROFILE MODAL STYLES */
         .profile-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
         .profile-avatar { width: 48px; height: 48px; border-radius: 50%; background-color: var(--accent-yellow); color: #000; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; }
         .profile-user-title { font-size: 18px; font-weight: 700; }
@@ -601,7 +596,6 @@
         .warning-text { color: var(--accent-yellow); font-size: 11px; text-align: right; margin-top: 2px; }
         .security-btn { display: flex; align-items: center; gap: 10px; background: rgba(255, 255, 255, 0.03); border-radius: 8px; padding: 12px; font-size: 13px; cursor: pointer; }
 
-        /* ADD PAYMENT METHOD SCREEN STYLES */
         .pm-modal-card {
             background-color: #1a1e26;
             border-radius: 16px;
@@ -698,7 +692,6 @@
             text-align: center;
         }
 
-        /* Saved Payment Accounts List */
         .pm-account-card {
             background-color: var(--bg-card);
             border-radius: 12px;
@@ -712,7 +705,6 @@
         .pm-acc-info p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
         .pm-delete-btn { color: var(--accent-red); cursor: pointer; font-size: 14px; padding: 6px; }
 
-        /* HOW TO USE GUIDE STYLES */
         .guide-section {
             background-color: var(--bg-card);
             border-radius: 12px;
@@ -895,8 +887,8 @@
             <button id="tradeSubmitBtn" class="btn-confirm-trade" onclick="confirmBuyTrade()">Buy USDT</button>
 
             <ul class="trade-bullets">
-                <li>Request will be sent to <span id="tradeSellerUsername" style="color:#fff; font-weight:bold;">user_creator_01</span></li>
-                <li>They have 5 minutes to accept</li>
+                <li>Request will be sent to <span id="tradeSellerUsername" style="color:#fff; font-weight:bold;">Azuz</span> for approval/rejection</li>
+                <li>They have 5 minutes to respond</li>
                 <li>You'll be notified once accepted</li>
             </ul>
         </div>
@@ -959,7 +951,6 @@
                 </div>
             </div>
 
-            <!-- DYNAMIC PAYMENT METHOD SELECTION -->
             <div class="input-group">
                 <div class="form-section-title" style="margin-bottom:4px;">Select Payment Methods</div>
                 <div class="payment-options" id="adPaymentOptionsContainer"></div>
@@ -1339,8 +1330,7 @@
         let currentFilter = 'all';
 
         let currentTrade = {
-            adId: 'ad_55',
-            sellerName: 'user_creator_01',
+            sellerName: 'Azuz',
             rate: 188.00,
             minETB: 3690.44,
             maxETB: 50000,
@@ -1355,8 +1345,12 @@
         ];
 
         const defaultSellAds = [
-            { id: 'ad_55', username: 'user_creator_01', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
+            { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
         ];
+
+        function getCurrentUsername() {
+            return (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : 'You';
+        }
 
         function getStoredAds() { return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]'); }
         function saveStoredAds(ads) { localStorage.setItem('allp2p_user_ads', JSON.stringify(ads)); }
@@ -1412,7 +1406,7 @@
             const isBuy = ad.type === 'buy';
             const btnBg = isBuy ? 'buy-bg' : 'sell-bg';
             const btnText = isBuy ? 'Buy' : 'Sell';
-            const username = ad.username || (tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'You');
+            const username = ad.username || getCurrentUsername();
             const avatarChar = username.charAt(0).toUpperCase();
             
             const paymentList = (ad.payments && ad.payments.length > 0) ? ad.payments : [ad.payment || 'Telebirr'];
@@ -1431,7 +1425,7 @@
                         </div>
                         ${isMyAd ? 
                             `<button class="action-btn sell-bg" onclick="deleteAd('${ad.id}')">Delete</button>` : 
-                            `<button class="action-btn ${btnBg}" onclick="startTrade('${ad.id}', '${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${pmParam}')">${btnText}</button>`
+                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${pmParam}')">${btnText}</button>`
                         }
                     </div>
                     <div class="card-details">
@@ -1443,9 +1437,21 @@
             `;
         }
 
+        function handleSellerAction(orderId, action) {
+            let orders = getOngoingOrders();
+            const idx = orders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                orders[idx].status = action === 'approve' ? 'APPROVED' : 'REJECTED';
+                saveOngoingOrders(orders);
+                tg.sendData(JSON.stringify({ action: "seller_order_decision", orderId: orderId, decision: action }));
+                renderOngoingOrders();
+            }
+        }
+
         function renderOngoingOrders() {
             const container = document.getElementById('ongoingOrdersList');
             const orders = getOngoingOrders();
+            const me = getCurrentUsername();
 
             if (orders.length === 0) {
                 container.innerHTML = `
@@ -1459,11 +1465,16 @@
                 return;
             }
 
-            container.innerHTML = orders.map(ord => `
+            container.innerHTML = orders.map(ord => {
+                const isSeller = ord.seller === me;
+                const isPending = ord.status === 'PENDING_APPROVAL';
+                const statusClass = ord.status === 'APPROVED' ? 'approved' : (ord.status === 'REJECTED' ? 'rejected' : '');
+
+                return `
                 <div class="order-card-item">
                     <div class="order-card-header">
-                        <span class="order-title">Order #${ord.order_id || ord.id.slice(-6)}</span>
-                        <span class="order-status">${ord.status}</span>
+                        <span class="order-title">Order #${ord.id.slice(-6)}</span>
+                        <span class="order-status ${statusClass}">${ord.status}</span>
                     </div>
                     <div class="card-details">
                         <div class="detail-col"><span class="label">Trader</span><span class="limit-val">${ord.seller}</span></div>
@@ -1474,7 +1485,13 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    <!-- DYNAMIC NEXT STEPS INSTRUCTIONS -->
+                    ${(isSeller || isPending) && isPending ? `
+                        <div class="approval-actions">
+                            <button class="btn-approve" onclick="handleSellerAction('${ord.id}', 'approve')">Approve Request</button>
+                            <button class="btn-reject" onclick="handleSellerAction('${ord.id}', 'reject')">Reject</button>
+                        </div>
+                    ` : ''}
+
                     <div class="next-steps-card">
                         <div class="next-steps-title">
                             <i class="fa-solid fa-list-check"></i> Next Steps to Complete Your Purchase
@@ -1488,7 +1505,8 @@
                         </ol>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         function populateAdPaymentMethods() {
@@ -1551,7 +1569,7 @@
 
             const newAd = {
                 id: 'ad_' + Date.now(),
-                username: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.first_name : 'My Offer',
+                username: getCurrentUsername(),
                 type: selectedType,
                 price: parseFloat(price).toFixed(2),
                 amount: amount,
@@ -1573,14 +1591,12 @@
             renderHomeAds();
         }
 
-        /* TRADE MODAL WITH BUYER PAYMENT SELECTION & BACKEND API INTEGRATION */
-        function startTrade(adId, traderName, rate, min, max, encodedPayments) {
+        function startTrade(traderName, rate, min, max, encodedPayments) {
             let payments = ['Telebirr'];
             try {
                 payments = JSON.parse(decodeURIComponent(encodedPayments));
             } catch(e) { payments = ['Telebirr']; }
 
-            currentTrade.adId = adId || 'ad_55';
             currentTrade.sellerName = traderName;
             currentTrade.rate = parseFloat(rate);
             currentTrade.minETB = parseFloat(min) || 200;
@@ -1671,7 +1687,7 @@
             }
         }
 
-        async function confirmBuyTrade() {
+        function confirmBuyTrade() {
             const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
             const rate = currentTrade.rate;
             const minUSDT = currentTrade.minETB / rate;
@@ -1682,53 +1698,26 @@
                 return;
             }
 
-            const buyerId = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? `user_${tg.initDataUnsafe.user.id}` : 'user_buyer_99';
-            
-            const tradePayload = {
-                action: "process_buyer_purchase",
-                buyer_id: buyerId,
-                ad_id: currentTrade.adId,
-                amount: parseFloat(totalUSDT.toFixed(2)),
-                chosenPayment: currentTrade.chosenPayment,
-                seller: currentTrade.sellerName,
-                rate: currentTrade.rate
-            };
-
-            // Call Python backend API if available, or fall back to local execution / Telegram WebApp sendData
-            try {
-                const response = await fetch('/api/purchase', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(tradePayload)
-                });
-                const resData = await response.json();
-                if (resData.order_id) {
-                    tradePayload.order_id = resData.order_id;
-                }
-            } catch (err) {
-                console.log("Backend offline or local simulation mode used:", err);
-                tradePayload.order_id = "order_" + Math.floor(100 + Math.random() * 900);
-            }
-
             const tradeData = {
-                id: tradePayload.order_id,
-                order_id: tradePayload.order_id,
+                id: 'ord_' + Date.now(),
                 seller: currentTrade.sellerName,
+                buyer: getCurrentUsername(),
                 rate: currentTrade.rate,
                 amountUSDT: totalUSDT.toFixed(2),
                 amountETB: (totalUSDT * currentTrade.rate).toFixed(2),
                 chosenPayment: currentTrade.chosenPayment,
-                status: 'pending_approval'
+                status: 'PENDING_APPROVAL'
             };
 
             const ongoing = getOngoingOrders();
             ongoing.unshift(tradeData);
             saveOngoingOrders(ongoing);
 
-            tg.sendData(JSON.stringify(tradePayload));
-            alert(`Purchase request sent to ${currentTrade.sellerName}! Order ID: ${tradeData.order_id}`);
+            tg.sendData(JSON.stringify({ action: "request_buy_trade", trade: tradeData }));
+            alert(`Order request sent to ${currentTrade.sellerName} for approval!`);
             closeBuyOrderModal();
             renderOngoingOrders();
+            switchTab('orders', document.querySelectorAll('.nav-item')[1]);
         }
 
         function switchTab(tabId, element) {
