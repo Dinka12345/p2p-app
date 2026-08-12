@@ -1474,10 +1474,10 @@
                 <div class="order-card-item">
                     <div class="order-card-header">
                         <span class="order-title">Order #${ord.id.slice(-6)}</span>
-                        <span class="order-status ${statusClass}">${ord.status}</span>
+                        <span class="order-status ${statusClass}">${ord.status.replace('_', ' ')}</span>
                     </div>
                     <div class="card-details">
-                        <div class="detail-col"><span class="label">Trader</span><span class="limit-val">${ord.seller}</span></div>
+                        <div class="detail-col"><span class="label">${isSeller ? 'Buyer' : 'Seller'}</span><span class="limit-val">${isSeller ? ord.buyer : ord.seller}</span></div>
                         <div class="detail-col"><span class="label">Amount</span><span class="limit-val">${ord.amountUSDT} USDT</span></div>
                         <div class="detail-col" style="align-items:flex-end;"><span class="label">Payment Method</span><span class="price-val" style="font-size:13px; color:var(--accent-yellow);">${ord.chosenPayment}</span></div>
                     </div>
@@ -1485,7 +1485,7 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    ${(isSeller || isPending) && isPending ? `
+                    ${isSeller && isPending ? `
                         <div class="approval-actions">
                             <button class="btn-approve" onclick="handleSellerAction('${ord.id}', 'approve')">Approve Request</button>
                             <button class="btn-reject" onclick="handleSellerAction('${ord.id}', 'reject')">Reject</button>
@@ -1494,14 +1494,20 @@
 
                     <div class="next-steps-card">
                         <div class="next-steps-title">
-                            <i class="fa-solid fa-list-check"></i> Next Steps to Complete Your Purchase
+                            <i class="fa-solid fa-list-check"></i> Next Steps
                         </div>
                         <ol class="next-steps-list">
-                            <li><strong>Wait for Acceptance:</strong> Wait for advertiser <strong>${ord.seller}</strong> to accept your request.</li>
-                            <li><strong>Get Payment Details:</strong> Once accepted, check the screen for the seller's <strong>${ord.chosenPayment} account details</strong>.</li>
-                            <li><strong>Transfer Funds:</strong> Transfer exactly <strong>${ord.amountETB} ETB</strong> using your ${ord.chosenPayment} app. Save your transaction receipt/SMS.</li>
-                            <li><strong>Confirm Payment:</strong> Tap <strong>"Paid"</strong> before the timer runs out to lock in your trade.</li>
-                            <li><strong>Receive Crypto:</strong> The advertiser will verify payment and release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
+                            ${isSeller ? `
+                                <li><strong>Review Request:</strong> Check buyer details and decide whether to accept.</li>
+                                <li><strong>Wait for Payment:</strong> Once accepted, wait for <strong>${ord.buyer}</strong> to transfer <strong>${ord.amountETB} ETB</strong> to your ${ord.chosenPayment}.</li>
+                                <li><strong>Release Crypto:</strong> Verify payment in your banking app before releasing funds.</li>
+                            ` : `
+                                <li><strong>Wait for Acceptance:</strong> Wait for advertiser <strong>${ord.seller}</strong> to accept your request.</li>
+                                <li><strong>Get Payment Details:</strong> Once accepted, check the screen for the seller's <strong>${ord.chosenPayment} account details</strong>.</li>
+                                <li><strong>Transfer Funds:</strong> Transfer exactly <strong>${ord.amountETB} ETB</strong> using your ${ord.chosenPayment} app. Save your transaction receipt/SMS.</li>
+                                <li><strong>Confirm Payment:</strong> Tap <strong>"Paid"</strong> before the timer runs out to lock in your trade.</li>
+                                <li><strong>Receive Crypto:</strong> The advertiser will verify payment and release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
+                            `}
                         </ol>
                     </div>
                 </div>
