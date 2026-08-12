@@ -1395,7 +1395,7 @@
             // 1. Start Transaction
             await client.query('BEGIN');
 
-            // 2. Deduct from Seller
+            // 2. Deduct from Seller ONLY
             const deductResult = await client.query(
               'UPDATE accounts SET balance = balance - $1 WHERE user_id = $2 AND balance >= $1 RETURNING balance',
               [amount, sellerId]
@@ -1405,7 +1405,7 @@
               throw new Error('Insufficient funds or invalid seller account.');
             }
 
-            // 3. Add to Buyer
+            // 3. Add to Buyer ONLY
             const addResult = await client.query(
               'UPDATE accounts SET balance = balance + $1 WHERE user_id = $2 RETURNING balance',
               [amount, buyerId]
@@ -1588,7 +1588,9 @@
                     saveOngoingOrders(orders);
                     renderOngoingOrders();
                 } else if (action === 'release') {
-                    // RELEASE ASSET LOGIC: Deduct from seller balance, add to buyer balance, move to completed
+                    // RELEASE ASSET LOGIC: 
+                    // If current user is the seller, deduct amount from seller's balance ONLY.
+                    // If current user is the buyer receiving it, add amount to buyer's balance ONLY.
                     const order = orders[idx];
                     const amountUSDT = parseFloat(order.amountUSDT);
                     const me = getCurrentUsername();
@@ -1599,8 +1601,12 @@
                             alert('Insufficient wallet balance to release assets!');
                             return;
                         }
-                        // Deduct from seller balance
+                        // Minus from seller balance ONLY
                         saveWalletBalance(currentBal - amountUSDT);
+                    } else if (order.buyer === me) {
+                        // Add to buyer balance ONLY (when seller releases)
+                        let currentBal = getWalletBalance();
+                        saveWalletBalance(currentBal + amountUSDT);
                     }
 
                     // Move order to completed
@@ -1613,7 +1619,7 @@
                     saveCompletedOrders(completed);
 
                     tg.sendData(JSON.stringify({ action: "release_asset", orderId: orderId, amount: amountUSDT }));
-                    alert(`Successfully released ${amountUSDT} USDT to buyer!`);
+                    alert(`Successfully released ${amountUSDT} USDT!`);
                     
                     renderOngoingOrders();
                     renderCompletedOrders();
