@@ -1399,12 +1399,10 @@
         function getOngoingOrders() { return JSON.parse(localStorage.getItem('allp2p_ongoing_orders') || '[]'); }
         function saveOngoingOrders(orders) { localStorage.setItem('allp2p_ongoing_orders', JSON.stringify(orders)); }
 
-        // Dynamic badge counter calculation and render logic
         function updateOrdersBadge() {
             const orders = getOngoingOrders();
             const badgeEl = document.getElementById('ordersBadgeCount');
             
-            // Filter pending/active order statuses
             const activeOrders = orders.filter(o => 
                 o.status === 'PENDING_APPROVAL' || 
                 o.status === 'Payment Pending' || 
@@ -1673,7 +1671,10 @@
 
             document.getElementById('tradeSellerUsername').innerText = currentTrade.sellerName;
             document.getElementById('tradeRateInfo').innerText = `Rate: 1 USD = ${currentTrade.rate.toFixed(2)} ETB`;
-            document.getElementById('tradeInputAmount').value = "18";
+            
+            // Set input value to match minimum limit directly
+            const defaultMinUSDT = (currentTrade.minETB / currentTrade.rate).toFixed(2);
+            document.getElementById('tradeInputAmount').value = defaultMinUSDT;
 
             setBuyCurrency('USD');
             document.getElementById('buyOrderModal').classList.add('active');
@@ -1701,10 +1702,12 @@
                 usdBtn.className = 'currency-tab active';
                 etbBtn.className = 'currency-tab';
                 suffix.innerText = 'USD';
+                document.getElementById('tradeInputAmount').value = (currentTrade.minETB / currentTrade.rate).toFixed(2);
             } else {
                 etbBtn.className = 'currency-tab active';
                 usdBtn.className = 'currency-tab';
                 suffix.innerText = 'ETB';
+                document.getElementById('tradeInputAmount').value = currentTrade.minETB.toFixed(2);
             }
             calculateTrade();
         }
@@ -1712,7 +1715,9 @@
         function calculateTrade() {
             const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
             const rate = currentTrade.rate;
-            const minUSDT = (currentTrade.minETB / rate).toFixed(2);
+            const minETB = currentTrade.minETB;
+            const maxETB = currentTrade.maxETB;
+            
             let totalPayETB = 0;
             let totalUSDT = 0;
 
@@ -1731,10 +1736,23 @@
             const errorText = document.getElementById('tradeMinErrorText');
             const submitBtn = document.getElementById('tradeSubmitBtn');
 
-            if (totalUSDT < minUSDT) {
+            if (totalPayETB < minETB) {
                 inputBox.classList.add('error');
                 errorBox.style.display = 'flex';
-                errorText.innerText = `Amount must be at least $${minUSDT} USDT`;
+                if (currentTrade.currency === 'USD') {
+                    errorText.innerText = `Amount must be at least $${(minETB / rate).toFixed(2)} USDT`;
+                } else {
+                    errorText.innerText = `Amount must be at least ${minETB.toFixed(2)} ETB`;
+                }
+                submitBtn.classList.remove('enabled');
+            } else if (totalPayETB > maxETB) {
+                inputBox.classList.add('error');
+                errorBox.style.display = 'flex';
+                if (currentTrade.currency === 'USD') {
+                    errorText.innerText = `Amount exceeds max limit of $${(maxETB / rate).toFixed(2)} USDT`;
+                } else {
+                    errorText.innerText = `Amount exceeds max limit of ${maxETB.toFixed(2)} ETB`;
+                }
                 submitBtn.classList.remove('enabled');
             } else {
                 inputBox.classList.remove('error');
@@ -1746,11 +1764,14 @@
         function confirmBuyTrade() {
             const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
             const rate = currentTrade.rate;
-            const minUSDT = currentTrade.minETB / rate;
+            const minETB = currentTrade.minETB;
+            const maxETB = currentTrade.maxETB;
+            
+            let totalPayETB = currentTrade.currency === 'USD' ? inputVal * rate : inputVal;
             let totalUSDT = currentTrade.currency === 'USD' ? inputVal : inputVal / rate;
 
-            if (totalUSDT < minUSDT) {
-                alert(`Minimum trade amount is $${minUSDT.toFixed(2)} USDT`);
+            if (totalPayETB < minETB || totalPayETB > maxETB) {
+                alert(`Order amount must be between ${minETB.toFixed(2)} ETB and ${maxETB.toFixed(2)} ETB`);
                 return;
             }
 
@@ -1760,7 +1781,7 @@
                 buyer: getCurrentUsername(),
                 rate: currentTrade.rate,
                 amountUSDT: totalUSDT.toFixed(2),
-                amountETB: (totalUSDT * currentTrade.rate).toFixed(2),
+                amountETB: totalPayETB.toFixed(2),
                 chosenPayment: currentTrade.chosenPayment,
                 status: 'PENDING_APPROVAL'
             };
