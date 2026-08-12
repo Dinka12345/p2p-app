@@ -142,6 +142,22 @@
         .btn-approve { flex: 1; background-color: var(--accent-green); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-reject { flex: 1; background-color: var(--accent-red); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
+        /* Pay button style (hidden by default) */
+        .btn-pay-action {
+            display: none;
+            width: 100%;
+            background-color: var(--accent-green);
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 12px;
+            text-align: center;
+        }
+
         .next-steps-card {
             background-color: #181d23;
             border: 1px solid var(--btn-bg);
@@ -1516,7 +1532,8 @@
             container.innerHTML = orders.map(ord => {
                 const isSeller = ord.seller === me;
                 const isPending = ord.status === 'PENDING_APPROVAL';
-                const statusClass = ord.status === 'APPROVED' ? 'approved' : (ord.status === 'REJECTED' ? 'rejected' : '');
+                const isApproved = ord.status === 'APPROVED';
+                const statusClass = isApproved ? 'approved' : (ord.status === 'REJECTED' ? 'rejected' : '');
 
                 return `
                 <div class="order-card-item">
@@ -1532,6 +1549,9 @@
                     <div style="margin-top:10px; font-size:12px; color:var(--text-muted);">
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
+
+                    <!-- Pay button shown only when approved -->
+                    <button class="btn-pay-action" id="pay-btn-${ord.id}" style="display: ${isApproved ? 'block' : 'none'};" onclick="processPayment('${ord.id}')">Pay Now</button>
 
                     ${isSeller && isPending ? `
                         <div class="approval-actions">
@@ -1553,7 +1573,7 @@
                                 <li><strong>Wait for Acceptance:</strong> Wait for advertiser <strong>${ord.seller}</strong> to accept your request.</li>
                                 <li><strong>Get Payment Details:</strong> Once accepted, check the screen for the seller's <strong>${ord.chosenPayment} account details</strong>.</li>
                                 <li><strong>Transfer Funds:</strong> Transfer exactly <strong>${ord.amountETB} ETB</strong> using your ${ord.chosenPayment} app. Save your transaction receipt/SMS.</li>
-                                <li><strong>Confirm Payment:</strong> Tap <strong>"Paid"</strong> before the timer runs out to lock in your trade.</li>
+                                <li><strong>Confirm Payment:</strong> Tap <strong>"Pay Now"</strong> above once approved to lock in your trade.</li>
                                 <li><strong>Receive Crypto:</strong> The advertiser will verify payment and release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
                             `}
                         </ol>
@@ -1561,6 +1581,10 @@
                 </div>
             `;
             }).join('');
+        }
+
+        function processPayment(orderId) {
+            alert('Redirecting to secure payment for Order #' + orderId.slice(-6) + '...');
         }
 
         function populateAdPaymentMethods() {
@@ -1672,7 +1696,6 @@
             document.getElementById('tradeSellerUsername').innerText = currentTrade.sellerName;
             document.getElementById('tradeRateInfo').innerText = `Rate: 1 USD = ${currentTrade.rate.toFixed(2)} ETB`;
             
-            // Set input value to match minimum limit directly
             const defaultMinUSDT = (currentTrade.minETB / currentTrade.rate).toFixed(2);
             document.getElementById('tradeInputAmount').value = defaultMinUSDT;
 
