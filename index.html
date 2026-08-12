@@ -1571,15 +1571,15 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    <!-- Payment Details View matching reference image details -->
+                    <!-- Payment Details Dynamic View matching seller configuration -->
                     <div class="next-steps-card" style="background-color: #0b0e11; border: 1px solid #2b3139; margin-top: 10px;">
                         <div class="next-steps-title" style="color: #fff; font-size: 12px; margin-bottom: 6px;">
                             Payment Details
                         </div>
                         <div style="font-size: 11px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
                             <div>Bank/Provider: <strong style="color:#fff;">${ord.chosenPayment}</strong></div>
-                            <div>Account Name: <strong style="color:#fff;">Welay Mebrahten</strong></div>
-                            <div>Phone Number: <strong style="color:#fff;">987396698</strong></div>
+                            <div>Account Name: <strong style="color:#fff;">${ord.seller}</strong></div>
+                            <div>Phone/Account: <strong style="color:#fff;">Verified Merchant Account</strong></div>
                             <div>Reference: <strong style="color:#fff;">ORD-${ord.id.slice(-6)}</strong></div>
                         </div>
                     </div>
@@ -1619,7 +1619,7 @@
                                 <li><strong>Wait for Payment:</strong> Once accepted, wait for <strong>${ord.buyer}</strong> to transfer <strong>${ord.amountETB} ETB</strong> using the reference details.</li>
                                 <li><strong>Release Crypto:</strong> Verify payment in your banking app, then click <strong>Release Asset</strong>.</li>
                             ` : `
-                                <li><strong>Transfer Funds:</strong> Send exactly <strong>${ord.amountETB} ETB</strong> to <strong>Welay Mebrahten</strong> (${ord.chosenPayment}, Phone: <strong>987396698</strong>) using reference <strong>ORD-${ord.id.slice(-6)}</strong>.</li>
+                                <li><strong>Transfer Funds:</strong> Send exactly <strong>${ord.amountETB} ETB</strong> to <strong>${ord.seller}</strong> (${ord.chosenPayment}) using reference <strong>ORD-${ord.id.slice(-6)}</strong>.</li>
                                 <li><strong>Confirm Payment:</strong> Click <strong>"I Have Paid"</strong> once the transaction is complete.</li>
                                 <li><strong>Receive Crypto:</strong> The seller will release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
                             `}
