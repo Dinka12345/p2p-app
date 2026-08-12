@@ -895,7 +895,7 @@
             <button id="tradeSubmitBtn" class="btn-confirm-trade" onclick="confirmBuyTrade()">Buy USDT</button>
 
             <ul class="trade-bullets">
-                <li>Request will be sent to <span id="tradeSellerUsername" style="color:#fff; font-weight:bold;">Azuz</span></li>
+                <li>Request will be sent to <span id="tradeSellerUsername" style="color:#fff; font-weight:bold;">user_creator_01</span></li>
                 <li>They have 5 minutes to accept</li>
                 <li>You'll be notified once accepted</li>
             </ul>
@@ -1339,7 +1339,8 @@
         let currentFilter = 'all';
 
         let currentTrade = {
-            sellerName: 'Azuz',
+            adId: 'ad_55',
+            sellerName: 'user_creator_01',
             rate: 188.00,
             minETB: 3690.44,
             maxETB: 50000,
@@ -1354,7 +1355,7 @@
         ];
 
         const defaultSellAds = [
-            { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
+            { id: 'ad_55', username: 'user_creator_01', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
         ];
 
         function getStoredAds() { return JSON.parse(localStorage.getItem('allp2p_user_ads') || '[]'); }
@@ -1430,7 +1431,7 @@
                         </div>
                         ${isMyAd ? 
                             `<button class="action-btn sell-bg" onclick="deleteAd('${ad.id}')">Delete</button>` : 
-                            `<button class="action-btn ${btnBg}" onclick="startTrade('${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${pmParam}')">${btnText}</button>`
+                            `<button class="action-btn ${btnBg}" onclick="startTrade('${ad.id}', '${username}', '${ad.price}', '${ad.min || 200}', '${ad.max || 50000}', '${pmParam}')">${btnText}</button>`
                         }
                     </div>
                     <div class="card-details">
@@ -1461,7 +1462,7 @@
             container.innerHTML = orders.map(ord => `
                 <div class="order-card-item">
                     <div class="order-card-header">
-                        <span class="order-title">Order #${ord.id.slice(-6)}</span>
+                        <span class="order-title">Order #${ord.order_id || ord.id.slice(-6)}</span>
                         <span class="order-status">${ord.status}</span>
                     </div>
                     <div class="card-details">
@@ -1572,13 +1573,14 @@
             renderHomeAds();
         }
 
-        /* TRADE MODAL WITH BUYER PAYMENT SELECTION */
-        function startTrade(traderName, rate, min, max, encodedPayments) {
+        /* TRADE MODAL WITH BUYER PAYMENT SELECTION & BACKEND API INTEGRATION */
+        function startTrade(adId, traderName, rate, min, max, encodedPayments) {
             let payments = ['Telebirr'];
             try {
                 payments = JSON.parse(decodeURIComponent(encodedPayments));
             } catch(e) { payments = ['Telebirr']; }
 
+            currentTrade.adId = adId || 'ad_55';
             currentTrade.sellerName = traderName;
             currentTrade.rate = parseFloat(rate);
             currentTrade.minETB = parseFloat(min) || 200;
@@ -1669,7 +1671,7 @@
             }
         }
 
-        function confirmBuyTrade() {
+        async function confirmBuyTrade() {
             const inputVal = parseFloat(document.getElementById('tradeInputAmount').value) || 0;
             const rate = currentTrade.rate;
             const minUSDT = currentTrade.minETB / rate;
@@ -1680,22 +1682,51 @@
                 return;
             }
 
+            const buyerId = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? `user_${tg.initDataUnsafe.user.id}` : 'user_buyer_99';
+            
+            const tradePayload = {
+                action: "process_buyer_purchase",
+                buyer_id: buyerId,
+                ad_id: currentTrade.adId,
+                amount: parseFloat(totalUSDT.toFixed(2)),
+                chosenPayment: currentTrade.chosenPayment,
+                seller: currentTrade.sellerName,
+                rate: currentTrade.rate
+            };
+
+            // Call Python backend API if available, or fall back to local execution / Telegram WebApp sendData
+            try {
+                const response = await fetch('/api/purchase', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(tradePayload)
+                });
+                const resData = await response.json();
+                if (resData.order_id) {
+                    tradePayload.order_id = resData.order_id;
+                }
+            } catch (err) {
+                console.log("Backend offline or local simulation mode used:", err);
+                tradePayload.order_id = "order_" + Math.floor(100 + Math.random() * 900);
+            }
+
             const tradeData = {
-                id: 'ord_' + Date.now(),
+                id: tradePayload.order_id,
+                order_id: tradePayload.order_id,
                 seller: currentTrade.sellerName,
                 rate: currentTrade.rate,
                 amountUSDT: totalUSDT.toFixed(2),
                 amountETB: (totalUSDT * currentTrade.rate).toFixed(2),
                 chosenPayment: currentTrade.chosenPayment,
-                status: 'PENDING'
+                status: 'pending_approval'
             };
 
             const ongoing = getOngoingOrders();
             ongoing.unshift(tradeData);
             saveOngoingOrders(ongoing);
 
-            tg.sendData(JSON.stringify({ action: "execute_buy_trade", trade: tradeData }));
-            alert(`Order sent! Chosen Payment: ${currentTrade.chosenPayment}`);
+            tg.sendData(JSON.stringify(tradePayload));
+            alert(`Purchase request sent to ${currentTrade.sellerName}! Order ID: ${tradeData.order_id}`);
             closeBuyOrderModal();
             renderOngoingOrders();
         }
