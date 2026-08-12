@@ -1533,13 +1533,19 @@
                 const isSeller = ord.seller === me;
                 const isPending = ord.status === 'PENDING_APPROVAL';
                 const isApproved = ord.status === 'APPROVED';
+                
+                let displayStatus = ord.status.replace('_', ' ');
+                if (isSeller && isApproved) {
+                    displayStatus = 'Payment Pending';
+                }
+                
                 const statusClass = isApproved ? 'approved' : (ord.status === 'REJECTED' ? 'rejected' : '');
 
                 return `
                 <div class="order-card-item">
                     <div class="order-card-header">
                         <span class="order-title">Order #${ord.id.slice(-6)}</span>
-                        <span class="order-status ${statusClass}">${ord.status.replace('_', ' ')}</span>
+                        <span class="order-status ${statusClass}">${displayStatus}</span>
                     </div>
                     <div class="card-details">
                         <div class="detail-col"><span class="label">${isSeller ? 'Buyer' : 'Seller'}</span><span class="limit-val">${isSeller ? ord.buyer : ord.seller}</span></div>
@@ -1550,8 +1556,8 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    <!-- Pay button shown only when approved -->
-                    <button class="btn-pay-action" id="pay-btn-${ord.id}" style="display: ${isApproved ? 'block' : 'none'};" onclick="processPayment('${ord.id}')">Pay Now</button>
+                    <!-- Pay button shown only when approved AND user is NOT the seller -->
+                    <button class="btn-pay-action" id="pay-btn-${ord.id}" style="display: ${isApproved && !isSeller ? 'block' : 'none'};" onclick="processPayment('${ord.id}')">Pay Now</button>
 
                     ${isSeller && isPending ? `
                         <div class="approval-actions">
