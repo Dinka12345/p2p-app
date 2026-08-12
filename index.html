@@ -55,9 +55,33 @@
             font-size: 10px;
             gap: 4px;
             cursor: pointer;
+            position: relative;
         }
         .nav-item.active { color: var(--accent-yellow); }
         .nav-item i { font-size: 18px; }
+
+        /* Notification Badge Styling */
+        .nav-icon-container {
+            position: relative;
+            display: inline-block;
+        }
+        .badge-count {
+            position: absolute;
+            top: -6px;
+            right: -10px;
+            background-color: var(--accent-red);
+            color: #ffffff;
+            font-size: 10px;
+            font-weight: bold;
+            height: 16px;
+            min-width: 16px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 4px;
+            box-sizing: border-box;
+        }
 
         .header { padding: 16px; display: flex; justify-content: space-between; align-items: center; }
         .header h1 { margin: 0; font-size: 22px; font-weight: bold; }
@@ -1305,7 +1329,10 @@
             <span>Home</span>
         </div>
         <div class="nav-item" onclick="switchTab('orders', this)">
-            <i class="fa-regular fa-file-lines"></i>
+            <div class="nav-icon-container">
+                <i class="fa-regular fa-file-lines"></i>
+                <span id="ordersBadgeCount" class="badge-count" style="display: none;">0</span>
+            </div>
             <span>Orders</span>
         </div>
         <div class="nav-item" onclick="switchTab('ads', this)">
@@ -1371,6 +1398,27 @@
 
         function getOngoingOrders() { return JSON.parse(localStorage.getItem('allp2p_ongoing_orders') || '[]'); }
         function saveOngoingOrders(orders) { localStorage.setItem('allp2p_ongoing_orders', JSON.stringify(orders)); }
+
+        // Dynamic badge counter calculation and render logic
+        function updateOrdersBadge() {
+            const orders = getOngoingOrders();
+            const badgeEl = document.getElementById('ordersBadgeCount');
+            
+            // Filter pending/active order statuses
+            const activeOrders = orders.filter(o => 
+                o.status === 'PENDING_APPROVAL' || 
+                o.status === 'Payment Pending' || 
+                o.status === 'APPROVED'
+            );
+            
+            const activeCount = activeOrders.length;
+            if (activeCount > 0) {
+                badgeEl.innerText = activeCount;
+                badgeEl.style.display = 'flex';
+            } else {
+                badgeEl.style.display = 'none';
+            }
+        }
 
         function renderHomeAds() {
             const userAds = getStoredAds();
@@ -1452,6 +1500,8 @@
             const container = document.getElementById('ongoingOrdersList');
             const orders = getOngoingOrders();
             const me = getCurrentUsername();
+
+            updateOrdersBadge();
 
             if (orders.length === 0) {
                 container.innerHTML = `
@@ -1887,6 +1937,7 @@
             renderMyAds();
             renderOngoingOrders();
             populateUserInfo();
+            updateOrdersBadge();
         };
     </script>
 </body>
