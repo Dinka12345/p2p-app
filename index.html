@@ -1388,6 +1388,47 @@
             { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
         ];
 
+        async function transferFunds(amount, sellerId, buyerId, pool) {
+          const client = await pool.connect();
+
+          try {
+            // 1. Start Transaction
+            await client.query('BEGIN');
+
+            // 2. Deduct from Seller
+            const deductResult = await client.query(
+              'UPDATE accounts SET balance = balance - $1 WHERE user_id = $2 AND balance >= $1 RETURNING balance',
+              [amount, sellerId]
+            );
+            
+            if (deductResult.rowCount === 0) {
+              throw new Error('Insufficient funds or invalid seller account.');
+            }
+
+            // 3. Add to Buyer
+            const addResult = await client.query(
+              'UPDATE accounts SET balance = balance + $1 WHERE user_id = $2 RETURNING balance',
+              [amount, buyerId]
+            );
+
+            if (addResult.rowCount === 0) {
+              throw new Error('Invalid buyer account.');
+            }
+
+            // 4. Commit Transaction if both succeed
+            await client.query('COMMIT');
+            return { success: true, message: 'Transfer completed successfully.' };
+
+          } catch (error) {
+            // Rollback changes if anything goes wrong
+            await client.query('ROLLBACK');
+            console.error('Transfer failed, rolled back:', error.message);
+            return { success: false, error: error.message };
+          } finally {
+            client.release();
+          }
+        }
+
         function getCurrentUsername() {
             return (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user.first_name : 'Temesigen';
         }
