@@ -137,12 +137,12 @@
         .order-status { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: rgba(251, 215, 67, 0.15); color: var(--accent-yellow); font-weight: bold; }
         .order-status.approved { background: rgba(14, 203, 129, 0.15); color: var(--accent-green); }
         .order-status.rejected { background: rgba(240, 74, 93, 0.15); color: var(--accent-red); }
+        .order-status.paid { background: rgba(41, 182, 246, 0.15); color: var(--accent-blue); }
 
         .approval-actions { display: flex; gap: 8px; margin-top: 12px; }
         .btn-approve { flex: 1; background-color: var(--accent-green); color: #000; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
         .btn-reject { flex: 1; background-color: var(--accent-red); color: #fff; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; }
 
-        /* Pay button style (hidden by default) */
         .btn-pay-action {
             display: none;
             width: 100%;
@@ -1422,7 +1422,8 @@
             const activeOrders = orders.filter(o => 
                 o.status === 'PENDING_APPROVAL' || 
                 o.status === 'Payment Pending' || 
-                o.status === 'APPROVED'
+                o.status === 'APPROVED' ||
+                o.status === 'PAID'
             );
             
             const activeCount = activeOrders.length;
@@ -1510,6 +1511,17 @@
             }
         }
 
+        function markOrderAsPaid(orderId) {
+            let orders = getOngoingOrders();
+            const idx = orders.findIndex(o => o.id === orderId);
+            if (idx !== -1) {
+                orders[idx].status = 'PAID';
+                saveOngoingOrders(orders);
+                tg.sendData(JSON.stringify({ action: "buyer_mark_paid", orderId: orderId }));
+                renderOngoingOrders();
+            }
+        }
+
         function renderOngoingOrders() {
             const container = document.getElementById('ongoingOrdersList');
             const orders = getOngoingOrders();
@@ -1533,13 +1545,16 @@
                 const isSeller = ord.seller === me;
                 const isPending = ord.status === 'PENDING_APPROVAL';
                 const isApproved = ord.status === 'APPROVED';
+                const isPaid = ord.status === 'PAID';
                 
                 let displayStatus = ord.status.replace('_', ' ');
                 if (isSeller && isApproved) {
                     displayStatus = 'Payment Pending';
+                } else if (isPaid) {
+                    displayStatus = 'PAID - RELEASE ASSET';
                 }
                 
-                const statusClass = isApproved ? 'approved' : (ord.status === 'REJECTED' ? 'rejected' : '');
+                const statusClass = isApproved ? 'approved' : (isPaid ? 'paid' : (ord.status === 'REJECTED' ? 'rejected' : ''));
 
                 return `
                 <div class="order-card-item">
@@ -1556,13 +1571,41 @@
                         Total Pay: <strong style="color:#fff;">${ord.amountETB} ETB</strong>
                     </div>
 
-                    <!-- Pay button shown only when approved AND user is NOT the seller -->
-                    <button class="btn-pay-action" id="pay-btn-${ord.id}" style="display: ${isApproved && !isSeller ? 'block' : 'none'};" onclick="processPayment('${ord.id}')">Pay Now</button>
+                    <!-- Payment Details View matching reference image details -->
+                    <div class="next-steps-card" style="background-color: #0b0e11; border: 1px solid #2b3139; margin-top: 10px;">
+                        <div class="next-steps-title" style="color: #fff; font-size: 12px; margin-bottom: 6px;">
+                            Payment Details
+                        </div>
+                        <div style="font-size: 11px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+                            <div>Bank/Provider: <strong style="color:#fff;">${ord.chosenPayment}</strong></div>
+                            <div>Account Name: <strong style="color:#fff;">Welay Mebrahten</strong></div>
+                            <div>Phone Number: <strong style="color:#fff;">987396698</strong></div>
+                            <div>Reference: <strong style="color:#fff;">ORD-${ord.id.slice(-6)}</strong></div>
+                        </div>
+                    </div>
 
+                    <!-- Pay / I Have Paid button for buyer -->
+                    ${isApproved && !isSeller ? `
+                        <button class="btn-pay-action" id="pay-btn-${ord.id}" style="display: block;" onclick="markOrderAsPaid('${ord.id}')">I Have Paid</button>
+                    ` : ''}
+
+                    ${isPaid && !isSeller ? `
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--accent-blue); text-align: center; font-weight: bold;">
+                            Payment Marked. Waiting for Seller to Release Asset.
+                        </div>
+                    ` : ''}
+
+                    <!-- Seller Actions -->
                     ${isSeller && isPending ? `
                         <div class="approval-actions">
                             <button class="btn-approve" onclick="handleSellerAction('${ord.id}', 'approve')">Approve Request</button>
                             <button class="btn-reject" onclick="handleSellerAction('${ord.id}', 'reject')">Reject</button>
+                        </div>
+                    ` : ''}
+
+                    ${isSeller && isPaid ? `
+                        <div class="approval-actions">
+                            <button class="btn-approve" style="background-color: var(--accent-green); color: #000;" onclick="handleSellerAction('${ord.id}', 'release')">Release Asset</button>
                         </div>
                     ` : ''}
 
@@ -1573,24 +1616,18 @@
                         <ol class="next-steps-list">
                             ${isSeller ? `
                                 <li><strong>Review Request:</strong> Check buyer details and decide whether to accept.</li>
-                                <li><strong>Wait for Payment:</strong> Once accepted, wait for <strong>${ord.buyer}</strong> to transfer <strong>${ord.amountETB} ETB</strong> to your ${ord.chosenPayment}.</li>
-                                <li><strong>Release Crypto:</strong> Verify payment in your banking app before releasing funds.</li>
+                                <li><strong>Wait for Payment:</strong> Once accepted, wait for <strong>${ord.buyer}</strong> to transfer <strong>${ord.amountETB} ETB</strong> using the reference details.</li>
+                                <li><strong>Release Crypto:</strong> Verify payment in your banking app, then click <strong>Release Asset</strong>.</li>
                             ` : `
-                                <li><strong>Wait for Acceptance:</strong> Wait for advertiser <strong>${ord.seller}</strong> to accept your request.</li>
-                                <li><strong>Get Payment Details:</strong> Once accepted, check the screen for the seller's <strong>${ord.chosenPayment} account details</strong>.</li>
-                                <li><strong>Transfer Funds:</strong> Transfer exactly <strong>${ord.amountETB} ETB</strong> using your ${ord.chosenPayment} app. Save your transaction receipt/SMS.</li>
-                                <li><strong>Confirm Payment:</strong> Tap <strong>"Pay Now"</strong> above once approved to lock in your trade.</li>
-                                <li><strong>Receive Crypto:</strong> The advertiser will verify payment and release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
+                                <li><strong>Transfer Funds:</strong> Send exactly <strong>${ord.amountETB} ETB</strong> to <strong>Welay Mebrahten</strong> (${ord.chosenPayment}, Phone: <strong>987396698</strong>) using reference <strong>ORD-${ord.id.slice(-6)}</strong>.</li>
+                                <li><strong>Confirm Payment:</strong> Click <strong>"I Have Paid"</strong> once the transaction is complete.</li>
+                                <li><strong>Receive Crypto:</strong> The seller will release <strong>${ord.amountUSDT} USDT</strong> to your wallet balance.</li>
                             `}
                         </ol>
                     </div>
                 </div>
             `;
             }).join('');
-        }
-
-        function processPayment(orderId) {
-            alert('Redirecting to secure payment for Order #' + orderId.slice(-6) + '...');
         }
 
         function populateAdPaymentMethods() {
