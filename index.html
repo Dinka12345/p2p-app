@@ -1388,6 +1388,33 @@
             { id: 'def3', username: 'Azuz', type: 'sell', price: '188.00', min: '3690.44', max: '50000.00', payments: ['Telebirr', 'CBE Birr', 'Awash Bank'], stats: '98% | 42 orders' }
         ];
 
+        async function completeOrder(orderId) {
+            // 1. Fetch the order details
+            const order = await getOrder(orderId);
+            const amount = order.amount;
+            const buyerId = order.buyerId;
+            const sellerId = order.sellerId;
+        
+            // 2. Execute the transfer within a single database transaction
+            await database.transaction(async (trx) => {
+                
+                // DEDUCT from Seller's wallet
+                await trx('wallets')
+                    .where({ userId: sellerId })
+                    .decrement('balance', amount);
+        
+                // ADD to Buyer's wallet (This is where the fix happens)
+                await trx('wallets')
+                    .where({ userId: buyerId })
+                    .increment('balance', amount); // <-- Ensure this is an addition, not a subtraction
+        
+                // 3. Mark the order as completed
+                await trx('orders')
+                    .where({ id: orderId })
+                    .update({ status: 'COMPLETED' });
+            });
+        }
+
         async function transferFunds(amount, sellerId, buyerId, pool) {
           const client = await pool.connect();
 
